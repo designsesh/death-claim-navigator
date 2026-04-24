@@ -1,16 +1,34 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { AppProvider, useApp } from "@/state/AppContext";
+import { TopBar } from "@/components/shell/TopBar";
+import { Sidebar } from "@/components/shell/Sidebar";
+import { HomeView } from "@/components/home/HomeView";
+import { ClaimWorkspace } from "@/components/workspace/ClaimWorkspace";
 
-// IMPORTANT: Fully REPLACE this with your own code
-const PlaceholderIndex = () => {
-  // PLACEHOLDER: Replace this entire return statement with the user's app.
-  // The inline background color is intentionally not part of the design system.
+function Shell() {
+  const { tabs, activeTabIndex, getClaim } = useApp();
+  const active = tabs[activeTabIndex];
+
   return (
-    <div className="flex min-h-screen items-center justify-center" style={{ backgroundColor: '#fcfbf8' }}>
-      <img data-lovable-blank-page-placeholder="REMOVE_THIS" src="/placeholder.svg" alt="Your app will live here!" />
+    <div className="h-screen flex flex-col bg-background text-foreground">
+      <TopBar />
+      <div className="flex-1 flex min-h-0">
+        <Sidebar />
+        <main className="flex-1 min-w-0 flex flex-col">
+          {active?.kind === "home" && <HomeView />}
+          {active?.kind === "claim" && (() => {
+            const c = getClaim(active.claimId);
+            return c ? <ClaimWorkspace claim={c} /> : <div className="p-6 text-muted-foreground">Claim not found.</div>;
+          })()}
+        </main>
+      </div>
     </div>
   );
-};
+}
 
-const Index = PlaceholderIndex;
+const Index = () => (
+  <AppProvider>
+    <Shell />
+  </AppProvider>
+);
 
 export default Index;
