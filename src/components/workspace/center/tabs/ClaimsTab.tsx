@@ -1,8 +1,8 @@
 import type { Claim } from "@/types/claim";
 import { Card } from "@/components/ui/card";
-import { ExpandableSection } from "./ExpandableSection";
-import { ChecklistSection } from "./ChecklistSection";
-import { ActivityNotesSection } from "./ActivityNotesSection";
+import { ExpandableSection } from "../ExpandableSection";
+import { ChecklistSection } from "../ChecklistSection";
+import { ActivityNotesSection } from "../ActivityNotesSection";
 import { StatusPill } from "@/components/common/StatusPill";
 import { CheckCircle2 } from "lucide-react";
 
