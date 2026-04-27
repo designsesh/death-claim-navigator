@@ -220,6 +220,14 @@ const claimB: Claim = {
     issueDate: "2019-06-22",
     status: "Active",
     carrier: "Lone Star Assurance",
+    productType: "Universal Life",
+    underwriter: "Rebecca Truong",
+    contestabilityPassed: true,
+    riders: ["Accidental Death Benefit", "Child Term Rider"],
+    premiumHistory: [
+      { date: "2024-06-22", amount: "$3,140.00", status: "Paid" },
+      { date: "2023-06-22", amount: "$3,140.00", status: "Paid" },
+    ],
   },
   policyBeneficiariesListed: [
     { name: "Carlos Delgado", relationship: "Spouse", share: 100 },
