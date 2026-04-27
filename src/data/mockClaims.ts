@@ -372,6 +372,14 @@ const claimC: Claim = {
     issueDate: "1998-11-01",
     status: "Paid-Up",
     carrier: "Heartland Mutual",
+    productType: "Whole Life",
+    underwriter: "Harold Stenson (retired)",
+    contestabilityPassed: true,
+    riders: ["Waiver of Premium"],
+    premiumHistory: [
+      { date: "2018-11-01", amount: "$2,150.00", status: "Paid" },
+      { date: "2017-11-01", amount: "$2,150.00", status: "Paid" },
+    ],
   },
   policyBeneficiariesListed: [
     { name: "Eleanor Brennan", relationship: "Spouse", share: 50 },
