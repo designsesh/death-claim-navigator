@@ -1,36 +1,37 @@
 import { ReactNode, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ChevronDown, ChevronUp, Maximize2, Minimize2 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import { SectionLabel } from "@/components/common/SectionLabel";
 
 export function ExpandableSection({
   label,
   children,
-  expandedHeight = "max-h-[600px]",
-  defaultHeight = "max-h-[260px]",
+  extended,
   rightSlot,
+  defaultExpanded = false,
 }: {
   label: string;
   children: ReactNode;
-  expandedHeight?: string;
-  defaultHeight?: string;
+  /** Optional richer view shown when expanded. If omitted, the section just toggles visibility of `children`. */
+  extended?: ReactNode;
   rightSlot?: ReactNode;
+  defaultExpanded?: boolean;
 }) {
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(defaultExpanded);
   return (
     <section className="border bg-card">
       <header className="flex items-center justify-between px-3 py-2 border-b">
         <SectionLabel>{label}</SectionLabel>
         <div className="flex items-center gap-1">
           {rightSlot}
-          <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => setExpanded((e) => !e)}>
-            {expanded ? <Minimize2 className="h-3.5 w-3.5" /> : <Maximize2 className="h-3.5 w-3.5" />}
+          <Button size="sm" variant="ghost" className="h-7 text-xs gap-1" onClick={() => setExpanded((e) => !e)}>
+            {expanded ? <><ChevronUp className="h-3.5 w-3.5" /> Show less</> : <><ChevronDown className="h-3.5 w-3.5" /> Show more</>}
           </Button>
         </div>
       </header>
-      <div className={cn("overflow-auto transition-[max-height]", expanded ? expandedHeight : defaultHeight)}>
+      <div>
         {children}
+        {expanded && extended && <div className="border-t bg-surface/50">{extended}</div>}
       </div>
     </section>
   );

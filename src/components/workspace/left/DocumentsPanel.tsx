@@ -78,9 +78,11 @@ export function DocumentsPanel({ claim }: { claim: Claim }) {
                 </Button>
               ) : (
                 <div className="flex gap-1">
-                  <Button size="icon" variant="ghost" className="h-8 w-8"><Eye className="h-3.5 w-3.5" /></Button>
-                  <Button size="icon" variant="ghost" className="h-8 w-8 text-danger" onClick={() => setDeleteFor(d)}>
-                    <Trash2 className="h-3.5 w-3.5" />
+                  <Button size="sm" variant="outline" className="h-8">
+                    <Eye className="h-3.5 w-3.5" /> View
+                  </Button>
+                  <Button size="sm" variant="ghost" className="h-8 text-danger hover:text-danger" onClick={() => setDeleteFor(d)}>
+                    <Trash2 className="h-3.5 w-3.5" /> Delete
                   </Button>
                 </div>
               )}

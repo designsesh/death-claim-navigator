@@ -43,19 +43,19 @@ export function Sidebar() {
         collapsed ? "w-12" : "w-56",
       )}
     >
+      <button
+        onClick={toggleSidebar}
+        className="border-b border-sidebar-border h-9 flex items-center justify-center text-muted-foreground hover:bg-sidebar-accent shrink-0"
+        aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+      >
+        {collapsed ? <ChevronsRight className="h-4 w-4" /> : <ChevronsLeft className="h-4 w-4" />}
+      </button>
       <nav className="flex-1 py-3 flex flex-col gap-0.5">
         {top.map((it) => <Item key={it.id} {...it} />)}
       </nav>
       <div className="border-t border-sidebar-border py-3 flex flex-col gap-0.5">
         {bottom.map((it) => <Item key={it.id} {...it} />)}
       </div>
-      <button
-        onClick={toggleSidebar}
-        className="border-t border-sidebar-border h-9 flex items-center justify-center text-muted-foreground hover:bg-sidebar-accent"
-        aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-      >
-        {collapsed ? <ChevronsRight className="h-4 w-4" /> : <ChevronsLeft className="h-4 w-4" />}
-      </button>
     </aside>
   );
 }

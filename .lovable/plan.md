@@ -1,97 +1,48 @@
-## Death Claims Dashboard — Build Plan
+## Goals
 
-A frontend-only prototype (mock TypeScript data, no backend) for a US life-insurance death-claims operations console. Includes a reusable design system, persistent UI shell, and 2–3 fully populated sample claims so you can demo end-to-end flows.
+Tighten the workspace UX based on user feedback: read-only FNOL with edit toggle, clearer document warnings, sections that grow inline (no inner scroll), richer verified data, sectioned Process Wall, and a top-mounted sidebar collapse button.
 
----
+## Changes
 
-### 1. Design system & theming
+### 1. Shell sidebar (`src/components/shell/Sidebar.tsx`)
+- Move the collapse/expand chevron button from the bottom to the **top** of the sidebar (above the nav items), keeping the same toggle behavior and icon swap.
 
-- Tokens defined in `index.css` (light + dark) and wired through `tailwind.config.ts`
-  - `--radius: 2px` (sharp corners everywhere)
-  - Neutral gray scale (background, surface, surface-2, border, muted, foreground)
-  - Single accent: deep blue (primary)
-  - Semantic: success (green), warning (amber), danger (red), info (blue)
-  - Monospace token for IDs / claim numbers / policy numbers
-- Typography scale: Display, H1, H2, Section label (uppercase + tracked), Body, Caption, Mono
-- Theme toggle in the top bar; choice persisted to `localStorage` and applied via `class="dark"` on `<html>`
-- All components use semantic tokens — no hardcoded hex/`bg-white` etc.
+### 2. Left column — FNOL panel (`src/components/workspace/left/FNOLPanel.tsx`)
+- Default to a **read-only display view** (label + value rows, mono for IDs/dates), grouped under "Death Information" and "Claimant Information".
+- Add an **Edit** button in the panel header. Clicking switches to the existing input/select form. Show **Save** + **Cancel** while editing; on Save, persist edits via `updateClaim` (extend `AppContext` updater usage already in place) and revert to the display view.
+- Same pattern will be applied to the Policy left panel (`PolicyPanel.tsx`) for consistency, since the user asked for editable→display behavior across left-panel data.
 
-### 2. App shell (persistent across all routes)
+### 3. Left column — Documents panel (`src/components/workspace/left/DocumentsPanel.tsx`)
+- Replace the View/Delete **icon-only** buttons with **text buttons** ("View", "Delete") using `Button variant="outline"`/`"ghost"` sizes.
+- In the **left rail tab icon** for Documents (`LeftColumn.tsx`), overlay a small **red alert dot/icon** when the active claim has any document with `status === "missing"`. Also add an inline red `AlertTriangle` next to the panel title row when missing docs exist.
 
-- **Top bar**
-  - Left: placeholder logo
-  - Center: tab strip — Home tab (always first, non-closeable) + dynamically opened claim tabs (session-only, closeable with X, click to switch)
-  - Right: profile icon, settings icon, dark-mode toggle
-- **Left sidebar** (collapsible, mini-icon mode when collapsed, tooltip on hover shows label)
-  - Top group: Home, Active Claims, All Claims, Email
-  - Bottom group: Knowledge Base, FAQ Database, Settings
-- **Main content area** swaps based on active top-bar tab
+### 4. Center column — Expandable sections (`ExpandableSection.tsx` + all tab files)
+- Remove the inner scroll container. Replace `max-h-* overflow-auto` with **natural height growth**; the section simply renders all its content and the page scrolls.
+- Keep the expand/collapse toggle but reframe it as **"Show more / Show less"**: when collapsed, render a compact summary (current default content); when expanded, render an extended block with more verified data.
+- Update each center tab to provide an **extended view** with significantly more verified detail:
+  - **Claims tab**: full intimation timeline, all matched FNOL fields with source pill, DMF/EVVE/OFAC outcome rows.
+  - **Policy tab**: rider list, premium history, contestability status, NICB/MIB outcomes, full beneficiary designation breakdown with shares and verified flags.
+  - **Beneficiary tab**: per-beneficiary verification matrix (ID verified, address verified, ACH verified, OFAC clear, KYC source) and side-by-side compare of policy designation vs claimed share.
+  - **Settlement / Payout tabs**: collapsed summary stays; expanded shows full ledger and per-beneficiary calculation breakdown.
 
-### 3. Home tab
+### 5. Center column — Editable summary cards
+- Add an **Edit** affordance on the Summary card sections in Claims, Policy, and Beneficiary tabs. Same display→form→save flow as FNOL: pencil icon switches the card into inputs; Save commits via `updateClaim`; Cancel discards. After save, view returns to display mode.
+- Implement via a small reusable `EditableField` component (`src/components/common/EditableField.tsx`) and a `useEditableSection` pattern (local `editing` state + buffered draft) so each card manages its own edit lifecycle.
 
-- Top row: KPI cards — Open Claims, Pending Documents, SLA at Risk, Payouts This Week
-- Below split into two panels:
-  - **My Active Claims** table (Claim ID, Deceased, DOD, Status, Stage, Assigned To, Action → opens claim tab)
-  - **Recent Activity / Notifications** feed
-- Quick search to open any claim by ID/name (adds a tab)
+### 6. Process Wall (`src/components/workspace/right/RightColumn.tsx`)
+- Replace the flat timeline with **collapsible subsections** in fixed order: **FNOL, Claims, Policy, Beneficiary, Beneficiary Settlement, Payout**.
+- Bucket existing `claim.activity` entries by their `tab` field (map `settlement` → "Beneficiary Settlement", `fnol` → "FNOL", etc.).
+- Each subsection header shows: title, count badge, and last activity timestamp. Body shows the chronological entries (existing icon + actor + action + detail + ts styling).
+- Default state: all sections expanded; remember per-section open state in component-local state.
 
-### 4. Claim workspace (opens when a claim tab is active)
+### 7. Mock data (`src/data/mockClaims.ts`)
+- Augment activity arrays so each tab bucket has at least 2-3 entries per claim, ensuring all six Process Wall subsections demonstrate content.
+- Add a few extra verified data points (e.g., rider names, premium history dates) referenced by the new extended views — kept compact, no schema explosion.
 
-Three-column layout with collapsible right column.
+### 8. Types (`src/types/claim.ts`)
+- Minor additions only as needed for extended views: optional `riders?: string[]`, `premiumHistory?: { date: string; amount: string }[]` on `PolicyInfo`; optional `verificationMatrix?: { idVerified: boolean; addressVerified: boolean; achVerified: boolean; ofacClear: boolean; }` on `Beneficiary`. All optional — existing data still valid.
 
-#### 4a. Left column — Data products (5 icon tabs, tooltip on hover)
+## Out of scope
 
-1. **FNOL** (intimation) — Death Information form (Salutation, First/Middle/Last, DOB, Date & Time of Death, Location, Cause, Policy #) + Claimant Information (Name, Phone, Email, Relationship dropdown: Spouse / Child / Parent / Sibling / Trustee / Other)
-2. **Policy** — Key fields (policy #, insured name, beneficiary, premium, issue date, active status) + "Open full policy" button (non-functional)
-3. **Documents** — Fixed checklist with status pills (Missing / Uploaded / Verified):
-   - Claim Form, Beneficiary Additional Form (multi, with "+ Add" row)
-   - Death Certificate, Last Will & Testament, Life Insurance Policy Document, Funeral Director's Certificate, Police Report (single each)
-   - Per row: Upload → drag-drop modal; once uploaded → View + Delete (delete confirm dialog with warning copy)
-4. **External Order** — List of US sources (DMF, EVVE, OFAC, NICB, MIB, LexisNexis), each with status + "Order" button
-5. **Email** — Inbox list (sender, subject, date) → detail view with Back to Inbox, body, attachments, "Extract to claim" button
-
-#### 4b. Center column — Claim workspace
-
-- **Claim info bar** above the tabs:
-  - Left: Claim ID (mono) · Deceased Name · Date of Death · Cause of Death
-  - Right: two status chips — "Litigation Risk" and "Express Claim Fast-Track" (greyed when inactive, accent-filled when active) + Estimated Time of Completion
-- **5 tabs**: Claims, Policy, Beneficiary, Beneficiary Settlement, Payout
-- **Shared layout per tab** (3 vertical sections):
-  1. **Summary** — cards / mini-table / text / small chart of key extracted info; expand button → scrollable full view
-  2. **Checklist** — mismatched & verified items as cards; each mismatch card has an "Assign / Communicate" action; expand → full audit list (all checks AI performed)
-  3. **Activity log + Notes** — chronological log scoped to that tab, plus a notes input so other handlers see context
-- **Per-tab content**:
-  - **Claims**: intimation, deceased + claimant, policy snapshot & active status, verified info; if all checks match, banner shows "Intimation step + claim creation completed in FNOL"; activity log = FNOL agent's work
-  - **Policy**: key policy info + beneficiaries listed on policy; checklist shows mismatches + fraud-risk flags; activity log + AI-suggested tasks + previous assignments
-  - **Beneficiary**: full beneficiary records (contact, account #, payout preference); checklist shows verification gaps; activity log
-  - **Beneficiary Settlement**: claim calculation, amount split per beneficiary, final list, "Generate settlement document" + "Email beneficiaries" → confirm modal → success state ("Email sent" badge per row)
-  - **Payout**: accounting entries per beneficiary (debit / credit / net payout), "Upload signed settlement document" zone, "Initiate Payout" button
-
-#### 4c. Right column — Collapsible side panel
-
-- Collapse/expand toggle
-- **AI Agent Hub** tab — list of running agents (name, status, last action) with expandable history dropdown per agent
-- **Process Wall** tab — unified, ordered timeline merging activity logs from all 5 center tabs into one chronological process view
-
-### 5. Sample data (2–3 mock US claims)
-
-Realistic US names, addresses (e.g., NY, TX, IL), SSN-style IDs (masked), policy numbers, US carriers. Each claim seeded with different states so the UI shows variety:
-
-- **Claim A** — Healthy claim, all docs verified, no mismatches, fast-track express eligible
-- **Claim B** — Mid-flow with document mismatches, litigation-risk flag on, AI agents actively working
-- **Claim C** — At settlement / payout stage, beneficiary email already sent, ready to initiate payout
-
-Mock emails, mock external-order responses, mock AI agent histories, and mock activity logs all included.
-
-### 6. Behavior & interactions
-
-- Sidebar collapse state, theme, and any in-claim section expansions persist to `localStorage`
-- Open claim tabs are session-only (reset on refresh)
-- Toasts for actions (upload success, email sent, payout initiated, etc.)
-- All destructive actions (delete document, initiate payout, send email) use confirm dialogs
-
-### Out of scope (this build)
-
-- Real authentication, real document parsing, real email sending, real payout integrations
-- Knowledge Base / FAQ Database / Settings pages (sidebar links route to placeholder pages)
-- Persistence beyond localStorage (no Supabase)
+- Top bar, Home view, AI Agents panel, External Order, Email panel — unchanged.
+- No backend; everything stays in-memory through `AppContext.updateClaim`.

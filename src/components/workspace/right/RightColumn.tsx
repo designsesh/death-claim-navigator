@@ -87,30 +87,69 @@ function AgentItem({ agent }: { agent: Claim["aiAgents"][number] }) {
   );
 }
 
+const PROCESS_SECTIONS: { key: Claim["activity"][number]["tab"]; label: string }[] = [
+  { key: "fnol", label: "FNOL" },
+  { key: "claims", label: "Claims" },
+  { key: "policy", label: "Policy" },
+  { key: "beneficiary", label: "Beneficiary" },
+  { key: "settlement", label: "Beneficiary Settlement" },
+  { key: "payout", label: "Payout" },
+];
+
 function ProcessWall({ claim }: { claim: Claim }) {
-  const sorted = [...claim.activity].sort((a, b) => a.ts.localeCompare(b.ts));
+  const [openMap, setOpenMap] = useState<Record<string, boolean>>(
+    () => Object.fromEntries(PROCESS_SECTIONS.map((s) => [s.key, true])),
+  );
   const Icon = (t: string) => (t === "ai" ? Bot : t === "system" ? Cog : User);
+
   return (
-    <div className="px-3 pb-3">
-      <ol className="relative border-l border-border ml-2 space-y-3 py-2">
-        {sorted.map((a) => {
-          const I = Icon(a.actorType);
-          return (
-            <li key={a.id} className="ml-4">
-              <div className="absolute -left-[7px] mt-1 h-3 w-3 bg-card border border-primary" />
-              <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{a.tab}</div>
-              <div className="text-xs flex items-start gap-1.5">
-                <I className={cn("h-3.5 w-3.5 mt-0.5 shrink-0", a.actorType === "ai" ? "text-primary" : a.actorType === "system" ? "text-warning" : "text-muted-foreground")} />
-                <div>
-                  <div><span className="font-medium">{a.actor}</span> · {a.action}</div>
-                  {a.detail && <div className="text-muted-foreground">{a.detail}</div>}
-                  <div className="font-mono text-[10px] text-muted-foreground">{a.ts}</div>
-                </div>
-              </div>
-            </li>
-          );
-        })}
-      </ol>
+    <div className="px-3 pb-3 space-y-2">
+      {PROCESS_SECTIONS.map((section) => {
+        const items = claim.activity
+          .filter((a) => a.tab === section.key)
+          .sort((a, b) => a.ts.localeCompare(b.ts));
+        const open = openMap[section.key];
+        const last = items[items.length - 1];
+        return (
+          <Collapsible
+            key={section.key}
+            open={open}
+            onOpenChange={(o) => setOpenMap((m) => ({ ...m, [section.key]: o }))}
+            className="border bg-card"
+          >
+            <CollapsibleTrigger className="w-full px-2 py-1.5 flex items-center gap-2 hover:bg-surface text-left">
+              <ChevronRight className={cn("h-3.5 w-3.5 transition-transform shrink-0", open && "rotate-90")} />
+              <span className="text-xs font-semibold flex-1">{section.label}</span>
+              <span className="text-[10px] font-mono text-muted-foreground">{items.length}</span>
+              {last && <span className="text-[10px] font-mono text-muted-foreground hidden sm:inline">{last.ts.slice(5)}</span>}
+            </CollapsibleTrigger>
+            <CollapsibleContent className="border-t bg-surface/40 px-2 py-2">
+              {items.length === 0 ? (
+                <div className="text-[11px] italic text-muted-foreground px-2">No activity yet.</div>
+              ) : (
+                <ol className="relative border-l border-border ml-1.5 space-y-2 py-1">
+                  {items.map((a) => {
+                    const I = Icon(a.actorType);
+                    return (
+                      <li key={a.id} className="ml-3 relative">
+                        <div className="absolute -left-[7px] mt-1 h-2 w-2 bg-card border border-primary" />
+                        <div className="text-[11px] flex items-start gap-1.5">
+                          <I className={cn("h-3 w-3 mt-0.5 shrink-0", a.actorType === "ai" ? "text-primary" : a.actorType === "system" ? "text-warning" : "text-muted-foreground")} />
+                          <div>
+                            <div><span className="font-medium">{a.actor}</span> · {a.action}</div>
+                            {a.detail && <div className="text-muted-foreground">{a.detail}</div>}
+                            <div className="font-mono text-[10px] text-muted-foreground">{a.ts}</div>
+                          </div>
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ol>
+              )}
+            </CollapsibleContent>
+          </Collapsible>
+        );
+      })}
     </div>
   );
 }
