@@ -9,8 +9,16 @@ import { HoverLabel } from "@/components/common/HoverLabel";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
+type RightTab = "agents" | "process";
+
 export function RightColumn({ claim }: { claim: Claim }) {
-  const { rightCollapsed, toggleRight } = useApp();
+  const { rightCollapsed, toggleRight, setRightCollapsed } = useApp();
+  const [activeTab, setActiveTab] = useState<RightTab>("agents");
+
+  const openTab = (tab: RightTab) => {
+    setActiveTab(tab);
+    if (rightCollapsed) setRightCollapsed(false);
+  };
 
   if (rightCollapsed) {
     return (
@@ -21,10 +29,14 @@ export function RightColumn({ claim }: { claim: Claim }) {
           </Button>
         </HoverLabel>
         <HoverLabel label="AI Agent Hub" side="left">
-          <div className="h-8 w-8 flex items-center justify-center text-primary"><Bot className="h-4 w-4" /></div>
+          <Button size="icon" variant="ghost" className="h-8 w-8 text-primary" onClick={() => openTab("agents")}>
+            <Bot className="h-4 w-4" />
+          </Button>
         </HoverLabel>
         <HoverLabel label="Process Wall" side="left">
-          <div className="h-8 w-8 flex items-center justify-center text-muted-foreground"><Activity className="h-4 w-4" /></div>
+          <Button size="icon" variant="ghost" className="h-8 w-8 text-muted-foreground" onClick={() => openTab("process")}>
+            <Activity className="h-4 w-4" />
+          </Button>
         </HoverLabel>
       </div>
     );
@@ -38,7 +50,7 @@ export function RightColumn({ claim }: { claim: Claim }) {
           <ChevronRight className="h-4 w-4" />
         </Button>
       </div>
-      <Tabs defaultValue="agents" className="flex-1 flex flex-col min-h-0">
+      <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as RightTab)} className="flex-1 flex flex-col min-h-0">
         <TabsList className="mx-3 mt-2 self-start">
           <TabsTrigger value="agents"><Bot className="h-3.5 w-3.5" /> AI Agents</TabsTrigger>
           <TabsTrigger value="process"><Activity className="h-3.5 w-3.5" /> Process Wall</TabsTrigger>

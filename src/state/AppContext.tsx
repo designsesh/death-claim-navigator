@@ -28,6 +28,7 @@ interface AppCtx {
   // right column
   rightCollapsed: boolean;
   toggleRight: () => void;
+  setRightCollapsed: (v: boolean) => void;
 }
 
 const Ctx = createContext<AppCtx | null>(null);
@@ -110,7 +111,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       tabs, activeTabIndex, setActiveTabIndex,
       openClaimTab, closeClaimTab,
       claims, getClaim, updateClaim,
-      rightCollapsed, toggleRight,
+      rightCollapsed, toggleRight, setRightCollapsed,
     }),
     [theme, toggleTheme, sidebarCollapsed, toggleSidebar, tabs, activeTabIndex, openClaimTab, closeClaimTab, claims, getClaim, updateClaim, rightCollapsed, toggleRight],
   );
