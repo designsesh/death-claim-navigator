@@ -81,6 +81,7 @@ const claimA: Claim = {
       routingNumber: "011000028",
       payoutPreference: "ACH",
       verified: true,
+      verificationMatrix: { idVerified: true, addressVerified: true, achVerified: true, ofacClear: true, kycSource: "Beneficiary Form + DMV" },
     },
   ],
   documents: [
