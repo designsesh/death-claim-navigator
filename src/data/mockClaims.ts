@@ -38,6 +38,15 @@ const claimA: Claim = {
     issueDate: "2008-03-14",
     status: "Active",
     carrier: "Continental Mutual Life",
+    productType: "20-Year Level Term, Convertible",
+    underwriter: "James O'Connor",
+    contestabilityPassed: true,
+    riders: ["Accidental Death Benefit", "Waiver of Premium", "Accelerated Death Benefit"],
+    premiumHistory: [
+      { date: "2024-03-14", amount: "$4,820.00", status: "Paid" },
+      { date: "2023-03-14", amount: "$4,820.00", status: "Paid" },
+      { date: "2022-03-14", amount: "$4,820.00", status: "Paid" },
+    ],
   },
   policyBeneficiariesListed: [
     { name: "Margaret Hayworth", relationship: "Spouse", share: 70 },
