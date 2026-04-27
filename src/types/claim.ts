@@ -32,6 +32,11 @@ export interface PolicyInfo {
   issueDate: string;
   status: "Active" | "Lapsed" | "Paid-Up";
   carrier: string;
+  riders?: string[];
+  premiumHistory?: { date: string; amount: string; status: "Paid" | "Pending" }[];
+  contestabilityPassed?: boolean;
+  productType?: string;
+  underwriter?: string;
 }
 
 export interface Beneficiary {
@@ -47,6 +52,13 @@ export interface Beneficiary {
   routingNumber: string;
   payoutPreference: "ACH" | "Check" | "Wire";
   verified: boolean;
+  verificationMatrix?: {
+    idVerified: boolean;
+    addressVerified: boolean;
+    achVerified: boolean;
+    ofacClear: boolean;
+    kycSource?: string;
+  };
 }
 
 export interface DocumentItem {
