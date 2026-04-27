@@ -36,7 +36,7 @@ export function LeftColumn({ claim }: { claim: Claim }) {
   };
 
   return (
-    <div className="h-full flex bg-card border-r">
+    <div className={cn("h-full flex bg-card border-r shrink-0 transition-[width] duration-200", collapsed ? "w-10" : "w-[360px]")}>
       {/* icon rail */}
       <div className="w-10 border-r flex flex-col py-2 gap-1 surface">
         <HoverLabel label={collapsed ? "Expand panel" : "Collapse panel"} side="right">
