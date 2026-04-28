@@ -10,13 +10,9 @@ export function TopBar() {
   return (
     <header className="h-14 flex items-stretch border-b bg-card">
       {/* Logo */}
-      <div className="w-60 shrink-0 flex items-center gap-2 px-4 border-r">
+      <div className="shrink-0 flex items-center px-4 border-r">
         <div className="h-8 w-8 bg-primary text-primary-foreground flex items-center justify-center">
           <Shield className="h-4 w-4" />
-        </div>
-        <div className="leading-tight">
-          <div className="text-sm font-semibold">Claims Console</div>
-          <div className="text-[10px] text-muted-foreground uppercase tracking-wider">Death Claims</div>
         </div>
       </div>
 
@@ -35,7 +31,6 @@ export function TopBar() {
                 )}
               >
                 <Home className="h-4 w-4" />
-                Home
               </button>
             );
           }
