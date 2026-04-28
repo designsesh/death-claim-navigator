@@ -65,27 +65,31 @@ export function DocumentsPanel({ claim }: { claim: Claim }) {
       {grouped.map((g) => (
         <div key={g.name}>
           {g.items.map((d) => (
-            <div key={d.id} className="flex items-center gap-3 py-2 border-b text-sm">
-              <FileText className="h-4 w-4 text-muted-foreground shrink-0" />
-              <div className="flex-1 min-w-0">
-                <div className="font-medium truncate">{d.name}</div>
-                {d.fileName && <div className="text-xs text-muted-foreground font-mono truncate">{d.fileName}</div>}
-              </div>
-              <StatusPill tone={tone(d.status)}>{d.status}</StatusPill>
-              {d.status === "missing" ? (
-                <Button size="sm" variant="outline" onClick={() => setUploadFor(d)}>
-                  <Upload className="h-3.5 w-3.5" /> Upload
-                </Button>
-              ) : (
-                <div className="flex gap-1">
-                  <Button size="sm" variant="outline" className="h-8">
-                    <Eye className="h-3.5 w-3.5" /> View
-                  </Button>
-                  <Button size="sm" variant="ghost" className="h-8 text-danger hover:text-danger" onClick={() => setDeleteFor(d)}>
-                    <Trash2 className="h-3.5 w-3.5" /> Delete
-                  </Button>
+            <div key={d.id} className="py-2 border-b text-sm">
+              <div className="flex items-start gap-3">
+                <FileText className="h-4 w-4 text-muted-foreground shrink-0 mt-0.5" />
+                <div className="flex-1 min-w-0">
+                  <div className="font-medium truncate">{d.name}</div>
+                  {d.fileName && <div className="text-xs text-muted-foreground font-mono truncate">{d.fileName}</div>}
                 </div>
-              )}
+                <StatusPill tone={tone(d.status)}>{d.status}</StatusPill>
+              </div>
+              <div className="mt-2 flex justify-end gap-1">
+                {d.status === "missing" ? (
+                  <Button size="sm" variant="outline" className="h-8" onClick={() => setUploadFor(d)}>
+                    <Upload className="h-3.5 w-3.5" /> Upload
+                  </Button>
+                ) : (
+                  <>
+                    <Button size="sm" variant="outline" className="h-8">
+                      <Eye className="h-3.5 w-3.5" /> View
+                    </Button>
+                    <Button size="sm" variant="ghost" className="h-8 text-danger hover:text-danger" onClick={() => setDeleteFor(d)}>
+                      <Trash2 className="h-3.5 w-3.5" /> Delete
+                    </Button>
+                  </>
+                )}
+              </div>
             </div>
           ))}
           {g.multi && (
