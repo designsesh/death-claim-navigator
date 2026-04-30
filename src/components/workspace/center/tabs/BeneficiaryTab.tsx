@@ -205,3 +205,8 @@ function Field({ label, value, mono, className }: { label: string; value: string
     </div>
   );
 }
+
+function Tick({ ok }: { ok?: boolean }) {
+  if (ok === undefined) return <span className="text-muted-foreground">—</span>;
+  return ok ? <Check className="h-4 w-4 text-success inline" /> : <X className="h-4 w-4 text-danger inline" />;
+}
