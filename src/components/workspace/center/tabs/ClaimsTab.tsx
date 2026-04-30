@@ -61,7 +61,7 @@ export function ClaimsTab({ claim }: { claim: Claim }) {
       >
         <div className="p-4 space-y-4">
           {allMatch && (
-            <div className="flex items-center gap-2 p-2 border-l-2 border-l-success bg-success-muted text-sm">
+            <div className="flex items-center gap-2 p-2 border-l-2 border-l-success text-sm">
               <CheckCircle2 className="h-4 w-4 text-success" />
               <span>Intimation step and claim creation completed in FNOL — all data points verified.</span>
             </div>

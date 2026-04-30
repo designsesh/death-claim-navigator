@@ -73,7 +73,7 @@ export function PayoutTab({ claim }: { claim: Claim }) {
         <Card className="p-4 space-y-3">
           <div className="label-tracked">Signed Settlement Document</div>
           {claim.payout.signedDocumentUploaded ? (
-            <div className="border-l-2 border-l-success bg-success-muted p-3 text-sm">
+            <div className="border-l-2 border-l-success p-3 text-sm">
               <div className="font-medium">signed_settlement_{claim.id}.pdf</div>
               <div className="text-xs text-muted-foreground mt-0.5">Uploaded · ready for payout</div>
             </div>
