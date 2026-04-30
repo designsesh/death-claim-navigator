@@ -126,9 +126,22 @@ export interface AIAgent {
   history: { ts: string; action: string; result: string }[];
 }
 
+export type ClaimStatus =
+  | "Open"
+  | "Assigned"
+  | "Claim Review"
+  | "Policy Review"
+  | "Awaiting Info"
+  | "Beneficiary Settlement"
+  | "Awaiting Sign-off"
+  | "Payout Processing"
+  | "Claim Closed"
+  | "Rejected"
+  | "Withdrawn";
+
 export interface Claim {
   id: string;
-  status: "Intimation" | "Investigation" | "Settlement" | "Payout" | "Closed";
+  status: ClaimStatus;
   stage: string;
   litigationRisk: boolean;
   expressFastTrack: boolean;
