@@ -4,7 +4,7 @@ import { Claim } from "@/types/claim";
 
 const claimA: Claim = {
   id: "CLM-2024-018472",
-  status: "Settlement",
+  status: "Beneficiary Settlement",
   stage: "Beneficiary Settlement",
   litigationRisk: false,
   expressFastTrack: true,
@@ -186,7 +186,7 @@ const claimA: Claim = {
 
 const claimB: Claim = {
   id: "CLM-2024-019104",
-  status: "Investigation",
+  status: "Policy Review",
   stage: "Document Verification",
   litigationRisk: true,
   expressFastTrack: false,
@@ -338,7 +338,7 @@ const claimB: Claim = {
 
 const claimC: Claim = {
   id: "CLM-2024-016920",
-  status: "Payout",
+  status: "Awaiting Sign-off",
   stage: "Awaiting Signed Settlement",
   litigationRisk: false,
   expressFastTrack: false,
