@@ -1,6 +1,5 @@
 import type { Claim } from "@/types/claim";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ClaimInfoBar } from "./ClaimInfoBar";
 import { ClaimsTab } from "./tabs/ClaimsTab";
 import { PolicyTab } from "./tabs/PolicyTab";
 import { BeneficiaryTab } from "./tabs/BeneficiaryTab";
@@ -10,12 +9,11 @@ import { PayoutTab } from "./tabs/PayoutTab";
 export function CenterColumn({ claim }: { claim: Claim }) {
   return (
     <div className="h-full flex flex-col bg-background min-w-0">
-      <ClaimInfoBar claim={claim} />
       <Tabs defaultValue="claims" className="flex-1 flex flex-col min-h-0">
         <TabsList className="mx-4 mt-3 self-start">
           <TabsTrigger value="claims">Claims</TabsTrigger>
           <TabsTrigger value="policy">Policy</TabsTrigger>
-          <TabsTrigger value="beneficiary">Beneficiary</TabsTrigger>
+          <TabsTrigger value="beneficiary">Beneficiaries</TabsTrigger>
           <TabsTrigger value="settlement">Beneficiary Settlement</TabsTrigger>
           <TabsTrigger value="payout">Payout</TabsTrigger>
         </TabsList>

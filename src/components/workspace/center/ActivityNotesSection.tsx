@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { SectionLabel } from "@/components/common/SectionLabel";
 import { Bot, User, Cog, Plus } from "lucide-react";
+import { formatDateTimeUS } from "@/lib/format";
 
 const TabKey = {
   claims: "claims" as const,
@@ -57,7 +58,7 @@ export function ActivityNotesSection({ claim, tab }: { claim: Claim; tab: TabKey
                     <div className="flex-1">
                       <div><span className="font-medium">{a.actor}</span> · {a.action}</div>
                       {a.detail && <div className="text-muted-foreground">{a.detail}</div>}
-                      <div className="font-mono text-[10px] text-muted-foreground">{a.ts}</div>
+                      <div className="num text-[10px] text-muted-foreground">{formatDateTimeUS(a.ts)}</div>
                     </div>
                   </li>
                 );
@@ -75,7 +76,7 @@ export function ActivityNotesSection({ claim, tab }: { claim: Claim; tab: TabKey
                 {notes.map((n) => (
                   <li key={n.id} className="text-xs border-l-2 border-l-primary pl-2">
                     <div>{n.text}</div>
-                    <div className="text-muted-foreground font-mono text-[10px] mt-0.5">{n.author} · {n.ts}</div>
+                    <div className="text-muted-foreground num text-[10px] mt-0.5">{n.author} · {formatDateTimeUS(n.ts)}</div>
                   </li>
                 ))}
               </ol>

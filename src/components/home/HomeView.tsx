@@ -8,6 +8,7 @@ import { Search, FileStack, FileX, Clock, DollarSign, ArrowUpRight } from "lucid
 import { StatusPill } from "@/components/common/StatusPill";
 import { SectionLabel } from "@/components/common/SectionLabel";
 import { useState } from "react";
+import { formatDateShortUS, formatDateTimeUS } from "@/lib/format";
 
 const KPI_CARDS = [
   { label: "Open Claims", value: KPI_DATA.openClaims, icon: FileStack, tone: "info" as const },
@@ -73,7 +74,7 @@ export function HomeView() {
                 <TableHead>Claim ID</TableHead>
                 <TableHead>Deceased</TableHead>
                 <TableHead>Date of Death</TableHead>
-                <TableHead>Stage</TableHead>
+                <TableHead>Status</TableHead>
                 <TableHead>Flags</TableHead>
                 <TableHead>Assigned</TableHead>
                 <TableHead></TableHead>
@@ -87,8 +88,8 @@ export function HomeView() {
                     <div className="font-medium">{c.death.salutation} {c.death.firstName} {c.death.lastName}</div>
                     <div className="text-xs text-muted-foreground">{c.death.location.split(",").slice(-2).join(",").trim()}</div>
                   </TableCell>
-                  <TableCell className="font-mono text-xs">{c.death.dod}</TableCell>
-                  <TableCell><StatusPill tone="info">{c.stage}</StatusPill></TableCell>
+                  <TableCell className="num text-xs">{formatDateShortUS(c.death.dod)}</TableCell>
+                  <TableCell><StatusPill tone="info">{c.status}</StatusPill></TableCell>
                   <TableCell className="space-x-1">
                     {c.litigationRisk && <StatusPill tone="danger">Litigation</StatusPill>}
                     {c.expressFastTrack && <StatusPill tone="success">Express</StatusPill>}
@@ -121,7 +122,7 @@ export function HomeView() {
                 <div className="text-xs text-muted-foreground flex items-center gap-2">
                   <span>{a.who}</span>
                   <span>·</span>
-                  <span className="font-mono">{a.ts}</span>
+                  <span className="num">{formatDateTimeUS(a.ts)}</span>
                 </div>
               </button>
             ))}

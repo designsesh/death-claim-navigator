@@ -54,7 +54,7 @@ export function SettlementTab({ claim }: { claim: Claim }) {
             <div className="label-tracked">Outstanding Loans</div>
             <div className="text-2xl font-mono font-semibold text-danger">-{fmt(claim.settlement.outstandingLoans)}</div>
           </Card>
-          <Card className="p-3 lg:col-span-3 bg-primary-muted">
+          <Card className="p-3 lg:col-span-3">
             <div className="flex items-center justify-between">
               <div>
                 <div className="label-tracked">Net Payable</div>

@@ -113,28 +113,41 @@ function BeneficiaryCard({ beneficiary, claimId }: { beneficiary: Beneficiary; c
   };
 
   return (
-    <Card className="p-3 space-y-2">
-      <div className="flex items-start justify-between">
-        <div className="flex-1">
-          <div className="text-sm font-semibold">{b.name}</div>
-          <div className="text-xs text-muted-foreground">{b.relationship} · {b.share}% share</div>
-        </div>
-        <StatusPill tone={b.verified ? "success" : "warning"}>
-          {b.verified ? <><Check className="h-3 w-3" /> Verified</> : <><X className="h-3 w-3" /> Pending</>}
-        </StatusPill>
-        {!editing ? (
-          <Button size="sm" variant="ghost" className="h-6 text-xs ml-1" onClick={() => { setDraft(beneficiary); setEditing(true); }}>
-            <Pencil className="h-3 w-3" /> Edit
-          </Button>
-        ) : (
-          <div className="flex gap-1 ml-1">
-            <Button size="sm" variant="ghost" className="h-6 text-xs" onClick={() => setEditing(false)}><X className="h-3 w-3" /></Button>
-            <Button size="sm" className="h-6 text-xs" onClick={save}><Save className="h-3 w-3" /> Save</Button>
+    <Card className="p-5 space-y-4">
+      {/* Header — name as the hero, subtitle */}
+      <div className="space-y-1">
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <div className="label-tracked">{b.relationship} · {b.share}% share</div>
+            <div className="text-xl font-semibold leading-tight mt-1">{b.name}</div>
+            <div className="text-sm text-muted-foreground mt-0.5">
+              {b.payoutPreference} payout · {b.verified ? "Verified" : "Verification pending"}
+            </div>
           </div>
-        )}
+          <div className="flex items-start gap-2">
+            <StatusPill tone={b.verified ? "success" : "warning"}>
+              {b.verified ? "Verified" : "Pending"}
+            </StatusPill>
+            {!editing ? (
+              <Button size="sm" variant="ghost" className="h-7 text-xs" onClick={() => { setDraft(beneficiary); setEditing(true); }}>
+                <Pencil className="h-3 w-3" /> Edit
+              </Button>
+            ) : (
+              <div className="flex gap-1">
+                <Button size="sm" variant="ghost" className="h-7 text-xs" onClick={() => setEditing(false)}>
+                  <X className="h-3 w-3" />
+                </Button>
+                <Button size="sm" className="h-7 text-xs" onClick={save}>
+                  <Save className="h-3 w-3" /> Save
+                </Button>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
+
       {editing ? (
-        <div className="space-y-2 pt-2 border-t">
+        <div className="space-y-2 pt-3 border-t">
           <EditField label="Address" value={b.address} onChange={(v) => setDraft((p) => ({ ...p, address: v }))} />
           <EditField label="Phone" value={b.phone} onChange={(v) => setDraft((p) => ({ ...p, phone: v }))} />
           <EditField label="Email" value={b.email} onChange={(v) => setDraft((p) => ({ ...p, email: v }))} />
@@ -142,21 +155,54 @@ function BeneficiaryCard({ beneficiary, claimId }: { beneficiary: Beneficiary; c
           <EditField label="Routing #" value={b.routingNumber} onChange={(v) => setDraft((p) => ({ ...p, routingNumber: v }))} />
         </div>
       ) : (
-        <div className="space-y-1.5 pt-2 border-t">
-          <DisplayField label="Address" value={b.address} />
-          <div className="grid grid-cols-2 gap-2">
-            <DisplayField label="Phone" value={b.phone} mono />
-            <DisplayField label="Email" value={b.email} mono />
-          </div>
-          <div className="grid grid-cols-3 gap-2">
-            <DisplayField label="SSN" value={`***-**-${b.ssnLast4}`} mono />
-            <DisplayField label="Account #" value={b.accountNumber} mono />
-            <DisplayField label="Routing #" value={b.routingNumber} mono />
-          </div>
-          <DisplayField label="Payout" value={b.payoutPreference} />
+        <div className="space-y-4 pt-3 border-t">
+          {/* Contact group */}
+          <Group title="Contact">
+            <div className="grid grid-cols-3 gap-x-6 gap-y-3">
+              <Field label="Phone" value={b.phone} mono />
+              <Field label="Email" value={b.email} mono className="col-span-2" />
+              <Field label="Address" value={b.address} className="col-span-3" />
+            </div>
+          </Group>
+
+          {/* Payout group */}
+          <Group title="Payout Details">
+            <div className="grid grid-cols-3 gap-x-6 gap-y-3">
+              <Field label="Method" value={b.payoutPreference} />
+              <Field label="Account #" value={b.accountNumber} mono />
+              <Field label="Routing #" value={b.routingNumber} mono />
+            </div>
+          </Group>
+
+          {/* Identity group */}
+          <Group title="Identity">
+            <div className="grid grid-cols-3 gap-x-6 gap-y-3">
+              <Field label="SSN" value={`***-**-${b.ssnLast4}`} mono />
+              <Field label="Share" value={`${b.share}%`} mono />
+              <Field label="Relationship" value={b.relationship} />
+            </div>
+          </Group>
         </div>
       )}
     </Card>
+  );
+}
+
+function Group({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <div className="label-tracked mb-2">{title}</div>
+      {children}
+    </div>
+  );
+}
+
+function Field({ label, value, mono, className }: { label: string; value: string; mono?: boolean; className?: string }) {
+  return (
+    <div className={`min-w-0 ${className ?? ""}`}>
+      <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{label}</div>
+      <div className={`text-sm mt-0.5 truncate ${mono ? "num" : "font-medium"}`}>{value || "—"}</div>
+    </div>
   );
 }
 
