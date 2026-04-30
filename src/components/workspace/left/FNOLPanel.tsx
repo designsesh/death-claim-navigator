@@ -8,6 +8,7 @@ import { DisplayField } from "@/components/common/EditableField";
 import { Pencil, Save, X } from "lucide-react";
 import { useApp } from "@/state/AppContext";
 import { toast } from "@/hooks/use-toast";
+import { formatDateUS } from "@/lib/format";
 
 export function FNOLPanel({ claim }: { claim: Claim }) {
   const { updateClaim } = useApp();
@@ -78,8 +79,8 @@ export function FNOLPanel({ claim }: { claim: Claim }) {
           <div className="grid grid-cols-2 gap-x-6 gap-y-3">
             <DisplayField label="Full Name" value={`${d.salutation} ${d.firstName} ${d.middleName} ${d.lastName}`} />
             <DisplayField label="Policy #" value={d.policyNumber} mono />
-            <DisplayField label="Date of Birth" value={d.dob} mono />
-            <DisplayField label="Date of Death" value={`${d.dod} ${d.dodTime}`} mono />
+            <DisplayField label="Date of Birth" value={formatDateUS(d.dob)} mono />
+            <DisplayField label="Date of Death" value={`${formatDateUS(d.dod)} · ${d.dodTime}`} mono />
             <DisplayField label="Location of Death" value={d.location} />
             <DisplayField label="Cause of Death" value={d.cause} />
           </div>
