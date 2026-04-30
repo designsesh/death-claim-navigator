@@ -26,7 +26,7 @@ export function ChecklistSection({ items, label = "Checklist" }: { items: Checkl
     >
       <div className="p-3 space-y-3">
         {mismatches.length === 0 ? (
-          <div className="text-sm text-success border-l-2 border-l-success bg-success-muted p-3">
+          <div className="text-sm text-success border-l-2 border-l-success p-3">
             {verified}/{total} verified — no mismatches.
           </div>
         ) : (
