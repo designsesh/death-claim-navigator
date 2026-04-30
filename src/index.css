@@ -166,15 +166,27 @@
     background-color: hsl(var(--surface-2));
   }
 
-  /* Status pills */
+  /* Status pills — clean, no filled backgrounds. Tone shows as a small dot + label color. */
   .pill {
-    @apply inline-flex items-center gap-1 rounded-sm px-2 py-0.5 text-[11px] font-medium;
+    @apply inline-flex items-center gap-1.5 px-1.5 py-0 text-[11px] font-medium tracking-normal text-foreground;
   }
-  .pill-success { background-color: hsl(var(--success-muted)); color: hsl(var(--success)); }
-  .pill-warning { background-color: hsl(var(--warning-muted)); color: hsl(var(--warning)); }
-  .pill-danger  { background-color: hsl(var(--danger-muted)); color: hsl(var(--danger)); }
-  .pill-info    { background-color: hsl(var(--info-muted)); color: hsl(var(--info)); }
-  .pill-muted   { background-color: hsl(var(--muted)); color: hsl(var(--muted-foreground)); }
+  .pill::before {
+    content: "";
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 9999px;
+    background-color: currentColor;
+    opacity: 0.9;
+  }
+  .pill-success { color: hsl(var(--success)); }
+  .pill-warning { color: hsl(var(--warning)); }
+  .pill-danger  { color: hsl(var(--danger)); }
+  .pill-info    { color: hsl(var(--info)); }
+  .pill-muted   { color: hsl(var(--muted-foreground)); }
+
+  /* tabular numerals everywhere we render numbers */
+  .num { font-family: var(--font-mono); font-feature-settings: "tnum"; }
 }
 
 /* Scrollbar polish */
