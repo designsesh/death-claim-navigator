@@ -74,7 +74,7 @@ export function HomeView() {
                 <TableHead>Claim ID</TableHead>
                 <TableHead>Deceased</TableHead>
                 <TableHead>Date of Death</TableHead>
-                <TableHead>Stage</TableHead>
+                <TableHead>Status</TableHead>
                 <TableHead>Flags</TableHead>
                 <TableHead>Assigned</TableHead>
                 <TableHead></TableHead>
