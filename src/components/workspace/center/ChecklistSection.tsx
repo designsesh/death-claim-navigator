@@ -1,11 +1,9 @@
 import { useState } from "react";
 import type { ChecklistItem } from "@/types/claim";
-import { Button } from "@/components/ui/button";
 import { StatusPill } from "@/components/common/StatusPill";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { AlertTriangle, MessageSquare, UserPlus, ChevronDown, ChevronRight } from "lucide-react";
+import { AlertTriangle, ChevronDown, ChevronRight } from "lucide-react";
 import { ExpandableSection } from "./ExpandableSection";
-import { toast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 
 export function ChecklistSection({ items, label = "Checklist" }: { items: ChecklistItem[]; label?: string }) {
@@ -81,17 +79,6 @@ export function ChecklistSection({ items, label = "Checklist" }: { items: Checkl
 }
 
 function MismatchCard({ item }: { item: ChecklistItem }) {
-  const assign = () =>
-    toast({
-      title: `Task assigned: ${item.label}`,
-      description: `Expected ${item.expected ?? "—"}, found ${item.found ?? "—"}${item.source ? ` (${item.source})` : ""}.`,
-    });
-  const communicate = () =>
-    toast({
-      title: `Communication drafted: ${item.label}`,
-      description: `Requesting clarification on mismatch — expected ${item.expected ?? "—"}, found ${item.found ?? "—"}.`,
-    });
-
   return (
     <div className="border bg-card p-3 border-l-2 border-l-danger">
       <div className="flex items-start gap-2">
@@ -100,20 +87,12 @@ function MismatchCard({ item }: { item: ChecklistItem }) {
           <div className="text-sm font-medium">{item.label}</div>
           {item.detail && <div className="text-xs text-muted-foreground mt-0.5">{item.detail}</div>}
           {item.expected && (
-            <div className="mt-1 text-[11px] font-mono space-y-0.5">
+            <div className="mt-1 text-[11px] num space-y-0.5">
               <div><span className="text-muted-foreground">Expected:</span> {item.expected}</div>
               <div><span className="text-muted-foreground">Found:</span> {item.found}</div>
             </div>
           )}
           {item.source && <div className="text-[11px] text-muted-foreground mt-1">Source: {item.source}</div>}
-          <div className="flex gap-1 mt-2">
-            <Button size="sm" variant="outline" className="h-7 text-xs" onClick={assign}>
-              <UserPlus className="h-3 w-3" /> Assign
-            </Button>
-            <Button size="sm" variant="ghost" className="h-7 text-xs" onClick={communicate}>
-              <MessageSquare className="h-3 w-3" /> Communicate
-            </Button>
-          </div>
         </div>
       </div>
     </div>
