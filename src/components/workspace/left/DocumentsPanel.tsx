@@ -69,25 +69,34 @@ export function DocumentsPanel({ claim }: { claim: Claim }) {
               <div className="flex items-start gap-3">
                 <FileText className="h-4 w-4 text-muted-foreground shrink-0 mt-0.5" />
                 <div className="flex-1 min-w-0">
-                  <div className="font-medium truncate">{d.name}</div>
+                  {d.status === "missing" ? (
+                    <div className="font-medium truncate">{d.name}</div>
+                  ) : (
+                    <button
+                      type="button"
+                      className="font-medium truncate text-primary hover:underline text-left w-full"
+                      onClick={() => toast({ title: "Opening document", description: d.fileName ?? d.name })}
+                    >
+                      {d.name}
+                    </button>
+                  )}
                   {d.fileName && <div className="text-xs text-muted-foreground font-mono truncate">{d.fileName}</div>}
                 </div>
                 <StatusPill tone={tone(d.status)}>{d.status}</StatusPill>
-              </div>
-              <div className="mt-2 flex justify-end gap-1">
                 {d.status === "missing" ? (
-                  <Button size="sm" variant="outline" className="h-8" onClick={() => setUploadFor(d)}>
+                  <Button size="sm" variant="outline" className="h-7 px-2" onClick={() => setUploadFor(d)}>
                     <Upload className="h-3.5 w-3.5" /> Upload
                   </Button>
                 ) : (
-                  <>
-                    <Button size="sm" variant="outline" className="h-8">
-                      <Eye className="h-3.5 w-3.5" /> View
-                    </Button>
-                    <Button size="sm" variant="ghost" className="h-8 text-danger hover:text-danger" onClick={() => setDeleteFor(d)}>
-                      <Trash2 className="h-3.5 w-3.5" /> Delete
-                    </Button>
-                  </>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className="h-7 w-7 text-danger hover:text-danger shrink-0"
+                    onClick={() => setDeleteFor(d)}
+                    aria-label="Delete document"
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </Button>
                 )}
               </div>
             </div>
