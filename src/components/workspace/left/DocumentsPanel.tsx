@@ -84,8 +84,14 @@ export function DocumentsPanel({ claim }: { claim: Claim }) {
                 </div>
                 <StatusPill tone={tone(d.status)}>{d.status}</StatusPill>
                 {d.status === "missing" ? (
-                  <Button size="sm" variant="outline" className="h-7 px-2" onClick={() => setUploadFor(d)}>
-                    <Upload className="h-3.5 w-3.5" /> Upload
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className="h-7 w-7 shrink-0"
+                    onClick={() => setUploadFor(d)}
+                    aria-label="Upload document"
+                  >
+                    <Upload className="h-3.5 w-3.5" />
                   </Button>
                 ) : (
                   <Button
