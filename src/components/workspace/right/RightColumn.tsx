@@ -26,7 +26,7 @@ const AGENT_NAMES = [
 
 export function RightColumn({ claim }: { claim: Claim }) {
   const { rightCollapsed, toggleRight, setRightCollapsed } = useApp();
-  const [activeTab, setActiveTab] = useState<RightTab>("process");
+  const [activeTab, setActiveTab] = useState<RightTab>("agents");
 
   const openTab = (tab: RightTab) => {
     setActiveTab(tab);
@@ -45,11 +45,6 @@ export function RightColumn({ claim }: { claim: Claim }) {
           </button>
         </HoverLabel>
         <div className="border-b mx-1" />
-        <HoverLabel label="Process Wall" side="left">
-          <button onClick={() => openTab("process")} className="h-9 w-9 mx-auto flex items-center justify-center text-muted-foreground hover:bg-surface-2">
-            <ActivityIcon className="h-4 w-4" />
-          </button>
-        </HoverLabel>
         <HoverLabel label="AI Agents" side="left">
           <button onClick={() => openTab("agents")} className="h-9 w-9 mx-auto flex items-center justify-center text-muted-foreground hover:bg-surface-2">
             <Bot className="h-4 w-4" />
@@ -78,12 +73,10 @@ export function RightColumn({ claim }: { claim: Claim }) {
       </div>
       <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as RightTab)} className="flex-1 flex flex-col min-h-0">
         <TabsList className="mx-3 mt-2 self-start">
-          <TabsTrigger value="process"><ActivityIcon className="h-3.5 w-3.5" /> Process</TabsTrigger>
           <TabsTrigger value="agents"><Bot className="h-3.5 w-3.5" /> Agents</TabsTrigger>
           <TabsTrigger value="notifications"><Bell className="h-3.5 w-3.5" /> Notifications</TabsTrigger>
         </TabsList>
         <div className="flex-1 overflow-auto">
-          <TabsContent value="process" className="mt-2"><ProcessWall claim={claim} /></TabsContent>
           <TabsContent value="agents" className="mt-2"><AgentList claim={claim} /></TabsContent>
           <TabsContent value="notifications" className="mt-2"><NotificationsList claim={claim} /></TabsContent>
         </div>
