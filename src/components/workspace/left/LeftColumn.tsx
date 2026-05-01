@@ -1,6 +1,6 @@
 import type { Claim } from "@/types/claim";
 import { useState } from "react";
-import { FileText, Shield, FolderOpen, Globe2, Mail, AlertCircle, ChevronsLeft, ChevronsRight } from "lucide-react";
+import { FileText, Shield, FolderOpen, Globe2, Mail, AlertCircle, ChevronsLeft, ChevronsRight, Activity as ActivityIcon } from "lucide-react";
 import { HoverLabel } from "@/components/common/HoverLabel";
 import { cn } from "@/lib/utils";
 import { FNOLPanel } from "./FNOLPanel";
@@ -8,8 +8,10 @@ import { PolicyPanel } from "./PolicyPanel";
 import { DocumentsPanel } from "./DocumentsPanel";
 import { ExternalOrderPanel } from "./ExternalOrderPanel";
 import { EmailPanel } from "./EmailPanel";
+import { ProcessWallPanel } from "./ProcessWallPanel";
 
 const TABS = [
+  { id: "process", label: "Process Wall", icon: ActivityIcon },
   { id: "fnol", label: "FNOL", icon: FileText },
   { id: "policy", label: "Policy", icon: Shield },
   { id: "documents", label: "Documents", icon: FolderOpen },
@@ -20,7 +22,7 @@ const TABS = [
 type TabId = typeof TABS[number]["id"];
 
 export function LeftColumn({ claim }: { claim: Claim }) {
-  const [active, setActive] = useState<TabId>("fnol");
+  const [active, setActive] = useState<TabId>("process");
   const [collapsed, setCollapsed] = useState(false);
   const missingDocs = claim.documents.filter((d) => d.status === "missing").length;
 
@@ -105,6 +107,7 @@ export function LeftColumn({ claim }: { claim: Claim }) {
           )}
         </div>
         <div className="flex-1 overflow-auto">
+          {active === "process" && <ProcessWallPanel claim={claim} />}
           {active === "fnol" && <FNOLPanel claim={claim} />}
           {active === "policy" && <PolicyPanel claim={claim} />}
           {active === "documents" && <DocumentsPanel claim={claim} />}
