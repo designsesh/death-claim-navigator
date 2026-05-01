@@ -1,15 +1,13 @@
-import type { Claim, ChecklistItem, ActivityEntry } from "@/types/claim";
+import type { Claim } from "@/types/claim";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Bot, Activity as ActivityIcon, ChevronRight, ChevronLeft, ChevronsRight, User, Cog, Bell, Circle } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Bot, ChevronLeft, ChevronsRight, Bell } from "lucide-react";
 import { HoverLabel } from "@/components/common/HoverLabel";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { useApp } from "@/state/AppContext";
 import { formatDateTimeUS, formatDateUS } from "@/lib/format";
 
-type RightTab = "process" | "agents" | "notifications";
+type RightTab = "agents" | "notifications";
 
 const AGENT_NAMES = [
   "Document Extraction Agent",
