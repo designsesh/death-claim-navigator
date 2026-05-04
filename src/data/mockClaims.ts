@@ -186,6 +186,11 @@ const claimA: Claim = {
     signedDocumentUploaded: false,
     initiated: false,
   },
+  tabStates: { claims: "done", policy: "done", beneficiary: "done", settlement: "pending", payout: "pending" },
+  tasks: [
+    { id: "T-1", title: "Confirm DOB on death certificate", description: "Re-check NY death cert page 2.", assignee: "Sarah Mitchell", selfAssigned: true, status: "done", createdAt: "2024-09-12 11:00", section: "claims", createdBy: "Sarah Mitchell" },
+    { id: "T-2", title: "Email signed settlement to Daniel", description: "Send DocuSign envelope.", assignee: "Sarah Mitchell", selfAssigned: true, status: "pending", createdAt: "2024-09-15 17:00", section: "settlement", createdBy: "Sarah Mitchell" },
+  ],
 };
 
 const claimB: Claim = {
