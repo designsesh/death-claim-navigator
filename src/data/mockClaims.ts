@@ -506,6 +506,11 @@ const claimC: Claim = {
     signedDocumentUploaded: false,
     initiated: false,
   },
+  tabStates: { claims: "done", policy: "done", beneficiary: "done", settlement: "done", payout: "pending" },
+  tasks: [
+    { id: "T-1", title: "Receive signed settlement document", description: "Awaiting Eleanor's e-signature.", assignee: "Sarah Mitchell", selfAssigned: true, status: "pending", createdAt: "2024-10-01 10:30", section: "payout", createdBy: "Sarah Mitchell" },
+    { id: "T-2", title: "Reconfirm Linda's mailing address", description: "Check before issuing paper check.", assignee: "Sarah Mitchell", selfAssigned: true, status: "done", createdAt: "2024-08-13 09:00", section: "beneficiary", createdBy: "Sarah Mitchell" },
+  ],
 };
 
 export const MOCK_CLAIMS: Claim[] = [claimA, claimB, claimC];
