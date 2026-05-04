@@ -346,6 +346,12 @@ const claimB: Claim = {
     signedDocumentUploaded: false,
     initiated: false,
   },
+  tabStates: { claims: "pending", policy: "pending", beneficiary: "pending", settlement: "pending", payout: "pending" },
+  tasks: [
+    { id: "T-1", title: "Follow up on toxicology report", description: "Houston Methodist — call medical records.", assignee: "Marcus Chen", selfAssigned: true, status: "pending", createdAt: "2024-09-22 09:00", section: "claims", createdBy: "Marcus Chen" },
+    { id: "T-2", title: "Review NICB hit detail", description: "Pull full report and assess relevance.", assignee: "Marcus Chen", selfAssigned: true, status: "pending", createdAt: "2024-09-23 15:30", section: "policy", createdBy: "Marcus Chen" },
+    { id: "T-3", title: "Coordinate with Delgado Law Office", description: "Send acknowledgement of representation.", assignee: "Priya Nair", selfAssigned: false, status: "pending", createdAt: "2024-09-24 12:00", section: "beneficiary", createdBy: "Marcus Chen" },
+  ],
 };
 
 const claimC: Claim = {
