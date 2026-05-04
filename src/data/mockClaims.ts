@@ -318,6 +318,9 @@ const claimB: Claim = {
   ],
   notes: [
     { id: "N-1", ts: "2024-09-24 11:00", author: "Marcus Chen", text: "Awaiting toxicology. Hold settlement until investigation closes. Loop in legal.", tab: "claims" },
+    { id: "N-2", ts: "2024-09-23 15:10", author: "Marcus Chen", text: "NICB hit references a 2018 auto claim — appears unrelated, but ordering full report.", tab: "policy" },
+    { id: "N-3", ts: "2024-09-24 11:45", author: "Marcus Chen", text: "Attorney for Sofia Delgado on file. All future contact through counsel.", tab: "beneficiary" },
+    { id: "N-4", ts: "2024-09-25 09:05", author: "Marcus Chen", text: "Settlement on hold pending investigation closure.", tab: "settlement" },
   ],
   aiAgents: [
     { id: "AG-1", name: "FNOL Intake Agent", status: "complete", lastAction: "Parsed intake email", lastRun: "2024-09-21 09:00", history: [{ ts: "2024-09-21 09:00", action: "Parse intake", result: "9 fields extracted" }] },
@@ -461,6 +464,10 @@ const claimC: Claim = {
   ],
   notes: [
     { id: "N-1", ts: "2024-09-30 17:05", author: "Sarah Mitchell", text: "All 3 beneficiaries notified. Eleanor confirmed receipt by phone.", tab: "settlement" },
+    { id: "N-2", ts: "2024-08-04 11:00", author: "Sarah Mitchell", text: "Clean intake — long-tenured policy, paid-up. No flags.", tab: "claims" },
+    { id: "N-3", ts: "2024-08-06 10:15", author: "Sarah Mitchell", text: "Policy paid-up since 2018. Designation matches will exactly.", tab: "policy" },
+    { id: "N-4", ts: "2024-08-12 11:30", author: "Sarah Mitchell", text: "Linda prefers paper check — confirmed mailing address.", tab: "beneficiary" },
+    { id: "N-5", ts: "2024-10-02 14:10", author: "Sarah Mitchell", text: "Reminder sent. Eleanor returning signed doc tomorrow.", tab: "payout" },
   ],
   aiAgents: [
     { id: "AG-1", name: "FNOL Intake Agent", status: "complete", lastAction: "Parsed intake", lastRun: "2024-08-04 10:35", history: [] },
