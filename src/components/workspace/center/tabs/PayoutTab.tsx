@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { ExpandableSection } from "../ExpandableSection";
 import { ChecklistSection } from "../ChecklistSection";
 import { ActivityNotesSection } from "../ActivityNotesSection";
+import { ObservationsSection } from "../ObservationsSection";
+import { TabStateHeader } from "../TabStateHeader";
 import { StatusPill } from "@/components/common/StatusPill";
 import { Upload, Send } from "lucide-react";
 import { useApp } from "@/state/AppContext";
@@ -35,6 +37,7 @@ export function PayoutTab({ claim }: { claim: Claim }) {
 
   return (
     <div className="p-4 space-y-4">
+      <TabStateHeader claim={claim} tab="payout" />
       <ExpandableSection label="Accounting Entries">
         <div className="p-0">
           <Table>
@@ -104,7 +107,8 @@ export function PayoutTab({ claim }: { claim: Claim }) {
         </Card>
       </div>
 
-      <ChecklistSection items={claim.checklists.payout} label="Payout Checklist" />
+      <ChecklistSection items={claim.checklists.payout} label="Checklist" />
+      <ObservationsSection claim={claim} tab="payout" />
       <ActivityNotesSection claim={claim} tab="payout" />
     </div>
   );

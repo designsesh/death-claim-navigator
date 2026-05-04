@@ -5,6 +5,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { ExpandableSection } from "../ExpandableSection";
 import { ChecklistSection } from "../ChecklistSection";
 import { ActivityNotesSection } from "../ActivityNotesSection";
+import { ObservationsSection } from "../ObservationsSection";
+import { TabStateHeader } from "../TabStateHeader";
 import { StatusPill } from "@/components/common/StatusPill";
 import { Check, X, Pencil, Save } from "lucide-react";
 import { DisplayField, EditField } from "@/components/common/EditableField";
@@ -15,6 +17,7 @@ import { toast } from "@/hooks/use-toast";
 export function BeneficiaryTab({ claim }: { claim: Claim }) {
   return (
     <div className="p-4 space-y-4">
+      <TabStateHeader claim={claim} tab="beneficiary" />
       <ExpandableSection
         label={`Beneficiaries (${claim.beneficiaries.length})`}
         extended={
@@ -94,7 +97,8 @@ export function BeneficiaryTab({ claim }: { claim: Claim }) {
         </div>
       </ExpandableSection>
 
-      <ChecklistSection items={claim.checklists.beneficiary} label="Verification Checklist" />
+      <ChecklistSection items={claim.checklists.beneficiary} label="Checklist" />
+      <ObservationsSection claim={claim} tab="beneficiary" />
       <ActivityNotesSection claim={claim} tab="beneficiary" />
     </div>
   );

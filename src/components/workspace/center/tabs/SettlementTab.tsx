@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { ExpandableSection } from "../ExpandableSection";
 import { ChecklistSection } from "../ChecklistSection";
 import { ActivityNotesSection } from "../ActivityNotesSection";
+import { ObservationsSection } from "../ObservationsSection";
+import { TabStateHeader } from "../TabStateHeader";
 import { StatusPill } from "@/components/common/StatusPill";
 import { FileSignature, Mail, Check } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -40,6 +42,7 @@ export function SettlementTab({ claim }: { claim: Claim }) {
 
   return (
     <div className="p-4 space-y-4">
+      <TabStateHeader claim={claim} tab="settlement" showSubmitForReview />
       <ExpandableSection label="Settlement Calculation">
         <div className="p-4 grid grid-cols-1 lg:grid-cols-3 gap-3">
           <Card className="p-3 space-y-1">
@@ -106,7 +109,8 @@ export function SettlementTab({ claim }: { claim: Claim }) {
         </div>
       </ExpandableSection>
 
-      <ChecklistSection items={claim.checklists.settlement} label="Settlement Checklist" />
+      <ChecklistSection items={claim.checklists.settlement} label="Checklist" />
+      <ObservationsSection claim={claim} tab="settlement" />
       <ActivityNotesSection claim={claim} tab="settlement" />
 
       <Dialog open={confirmEmail} onOpenChange={setConfirmEmail}>

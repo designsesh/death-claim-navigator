@@ -156,6 +156,10 @@ const claimA: Claim = {
   ],
   notes: [
     { id: "N-1", ts: "2024-09-13 10:00", author: "Sarah Mitchell", text: "Express track candidate — clean docs, low complexity.", tab: "claims" },
+    { id: "N-2", ts: "2024-09-13 14:50", author: "Marcus Chen", text: "Underwriter notes pulled, contestability passed without issue.", tab: "policy" },
+    { id: "N-3", ts: "2024-09-14 09:20", author: "Sarah Mitchell", text: "Daniel called — confirmed mailing address and ACH details. Friendly.", tab: "beneficiary" },
+    { id: "N-4", ts: "2024-09-15 16:50", author: "Sarah Mitchell", text: "Splits reviewed against will — match. Ready to email beneficiaries.", tab: "settlement" },
+    { id: "N-5", ts: "2024-09-16 09:15", author: "Sarah Mitchell", text: "Holding for signed settlement; ETA Friday.", tab: "payout" },
   ],
   aiAgents: [
     { id: "AG-1", name: "FNOL Intake Agent", status: "complete", lastAction: "Parsed intake email", lastRun: "2024-09-12 09:35", history: [{ ts: "2024-09-12 09:35", action: "Parsed intake email", result: "10 fields extracted" }] },
@@ -182,6 +186,11 @@ const claimA: Claim = {
     signedDocumentUploaded: false,
     initiated: false,
   },
+  tabStates: { claims: "done", policy: "done", beneficiary: "done", settlement: "pending", payout: "pending" },
+  tasks: [
+    { id: "T-1", title: "Confirm DOB on death certificate", description: "Re-check NY death cert page 2.", assignee: "Sarah Mitchell", selfAssigned: true, status: "done", createdAt: "2024-09-12 11:00", section: "claims", createdBy: "Sarah Mitchell" },
+    { id: "T-2", title: "Email signed settlement to Daniel", description: "Send DocuSign envelope.", assignee: "Sarah Mitchell", selfAssigned: true, status: "pending", createdAt: "2024-09-15 17:00", section: "settlement", createdBy: "Sarah Mitchell" },
+  ],
 };
 
 const claimB: Claim = {
@@ -314,6 +323,9 @@ const claimB: Claim = {
   ],
   notes: [
     { id: "N-1", ts: "2024-09-24 11:00", author: "Marcus Chen", text: "Awaiting toxicology. Hold settlement until investigation closes. Loop in legal.", tab: "claims" },
+    { id: "N-2", ts: "2024-09-23 15:10", author: "Marcus Chen", text: "NICB hit references a 2018 auto claim — appears unrelated, but ordering full report.", tab: "policy" },
+    { id: "N-3", ts: "2024-09-24 11:45", author: "Marcus Chen", text: "Attorney for Sofia Delgado on file. All future contact through counsel.", tab: "beneficiary" },
+    { id: "N-4", ts: "2024-09-25 09:05", author: "Marcus Chen", text: "Settlement on hold pending investigation closure.", tab: "settlement" },
   ],
   aiAgents: [
     { id: "AG-1", name: "FNOL Intake Agent", status: "complete", lastAction: "Parsed intake email", lastRun: "2024-09-21 09:00", history: [{ ts: "2024-09-21 09:00", action: "Parse intake", result: "9 fields extracted" }] },
@@ -334,6 +346,12 @@ const claimB: Claim = {
     signedDocumentUploaded: false,
     initiated: false,
   },
+  tabStates: { claims: "pending", policy: "pending", beneficiary: "pending", settlement: "pending", payout: "pending" },
+  tasks: [
+    { id: "T-1", title: "Follow up on toxicology report", description: "Houston Methodist — call medical records.", assignee: "Marcus Chen", selfAssigned: true, status: "pending", createdAt: "2024-09-22 09:00", section: "claims", createdBy: "Marcus Chen" },
+    { id: "T-2", title: "Review NICB hit detail", description: "Pull full report and assess relevance.", assignee: "Marcus Chen", selfAssigned: true, status: "pending", createdAt: "2024-09-23 15:30", section: "policy", createdBy: "Marcus Chen" },
+    { id: "T-3", title: "Coordinate with Delgado Law Office", description: "Send acknowledgement of representation.", assignee: "Priya Nair", selfAssigned: false, status: "pending", createdAt: "2024-09-24 12:00", section: "beneficiary", createdBy: "Marcus Chen" },
+  ],
 };
 
 const claimC: Claim = {
@@ -457,6 +475,10 @@ const claimC: Claim = {
   ],
   notes: [
     { id: "N-1", ts: "2024-09-30 17:05", author: "Sarah Mitchell", text: "All 3 beneficiaries notified. Eleanor confirmed receipt by phone.", tab: "settlement" },
+    { id: "N-2", ts: "2024-08-04 11:00", author: "Sarah Mitchell", text: "Clean intake — long-tenured policy, paid-up. No flags.", tab: "claims" },
+    { id: "N-3", ts: "2024-08-06 10:15", author: "Sarah Mitchell", text: "Policy paid-up since 2018. Designation matches will exactly.", tab: "policy" },
+    { id: "N-4", ts: "2024-08-12 11:30", author: "Sarah Mitchell", text: "Linda prefers paper check — confirmed mailing address.", tab: "beneficiary" },
+    { id: "N-5", ts: "2024-10-02 14:10", author: "Sarah Mitchell", text: "Reminder sent. Eleanor returning signed doc tomorrow.", tab: "payout" },
   ],
   aiAgents: [
     { id: "AG-1", name: "FNOL Intake Agent", status: "complete", lastAction: "Parsed intake", lastRun: "2024-08-04 10:35", history: [] },
@@ -484,6 +506,11 @@ const claimC: Claim = {
     signedDocumentUploaded: false,
     initiated: false,
   },
+  tabStates: { claims: "done", policy: "done", beneficiary: "done", settlement: "done", payout: "pending" },
+  tasks: [
+    { id: "T-1", title: "Receive signed settlement document", description: "Awaiting Eleanor's e-signature.", assignee: "Sarah Mitchell", selfAssigned: true, status: "pending", createdAt: "2024-10-01 10:30", section: "payout", createdBy: "Sarah Mitchell" },
+    { id: "T-2", title: "Reconfirm Linda's mailing address", description: "Check before issuing paper check.", assignee: "Sarah Mitchell", selfAssigned: true, status: "done", createdAt: "2024-08-13 09:00", section: "beneficiary", createdBy: "Sarah Mitchell" },
+  ],
 };
 
 export const MOCK_CLAIMS: Claim[] = [claimA, claimB, claimC];

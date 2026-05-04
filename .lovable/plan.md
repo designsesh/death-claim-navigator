@@ -1,48 +1,133 @@
-## Goals
+## Overview
 
-Tighten the workspace UX based on user feedback: read-only FNOL with edit toggle, clearer document warnings, sections that grow inline (no inner scroll), richer verified data, sectioned Process Wall, and a top-mounted sidebar collapse button.
+Major workspace overhaul: claim status is no longer a freeform dropdown — it is now derived from per-tab pending/done state. Workspace tabs get colored bar styling, an inline pending/done toggle, an AI Observations section, and the left panel gains Tasks + Notes panels.
 
-## Changes
+## 1. Top header (`ClaimHeaderBar.tsx`)
 
-### 1. Shell sidebar (`src/components/shell/Sidebar.tsx`)
-- Move the collapse/expand chevron button from the bottom to the **top** of the sidebar (above the nav items), keeping the same toggle behavior and icon swap.
+- Remove the Status `<Select>` dropdown and the "Save" button (and `Save` icon import).
+- Keep: Claim ID, Deceased Name, Policy ID, Face Amount, Date of Death, litigation/express flags, Upload doc icon, Create task icon.
+- Remove `STATUSES` constant and `setStatus` handler.
+- Derive a small read-only status label from tab states, e.g. text like `Status — Policy Verification` showing the current pending tab (or "Closed — All stages done"). Plain text, no chip.
 
-### 2. Left column — FNOL panel (`src/components/workspace/left/FNOLPanel.tsx`)
-- Default to a **read-only display view** (label + value rows, mono for IDs/dates), grouped under "Death Information" and "Claimant Information".
-- Add an **Edit** button in the panel header. Clicking switches to the existing input/select form. Show **Save** + **Cancel** while editing; on Save, persist edits via `updateClaim` (extend `AppContext` updater usage already in place) and revert to the display view.
-- Same pattern will be applied to the Policy left panel (`PolicyPanel.tsx`) for consistency, since the user asked for editable→display behavior across left-panel data.
+## 2. Tab-as-state model
 
-### 3. Left column — Documents panel (`src/components/workspace/left/DocumentsPanel.tsx`)
-- Replace the View/Delete **icon-only** buttons with **text buttons** ("View", "Delete") using `Button variant="outline"`/`"ghost"` sizes.
-- In the **left rail tab icon** for Documents (`LeftColumn.tsx`), overlay a small **red alert dot/icon** when the active claim has any document with `status === "missing"`. Also add an inline red `AlertTriangle` next to the panel title row when missing docs exist.
+Add to `Claim` (in `src/types/claim.ts`):
+```ts
+tabStates: {
+  claims: "pending" | "done";
+  policy: "pending" | "done";
+  beneficiary: "pending" | "done";
+  settlement: "pending" | "done";
+  payout: "pending" | "done";
+};
+```
 
-### 4. Center column — Expandable sections (`ExpandableSection.tsx` + all tab files)
-- Remove the inner scroll container. Replace `max-h-* overflow-auto` with **natural height growth**; the section simply renders all its content and the page scrolls.
-- Keep the expand/collapse toggle but reframe it as **"Show more / Show less"**: when collapsed, render a compact summary (current default content); when expanded, render an extended block with more verified data.
-- Update each center tab to provide an **extended view** with significantly more verified detail:
-  - **Claims tab**: full intimation timeline, all matched FNOL fields with source pill, DMF/EVVE/OFAC outcome rows.
-  - **Policy tab**: rider list, premium history, contestability status, NICB/MIB outcomes, full beneficiary designation breakdown with shares and verified flags.
-  - **Beneficiary tab**: per-beneficiary verification matrix (ID verified, address verified, ACH verified, OFAC clear, KYC source) and side-by-side compare of policy designation vs claimed share.
-  - **Settlement / Payout tabs**: collapsed summary stays; expanded shows full ledger and per-beneficiary calculation breakdown.
+Seed sensible defaults in `mockClaims.ts` for the 3 claims (e.g. claimA: claims/policy done, beneficiary done, settlement pending, payout pending; claimB: claims pending; claimC: settlement done, payout pending).
 
-### 5. Center column — Editable summary cards
-- Add an **Edit** affordance on the Summary card sections in Claims, Policy, and Beneficiary tabs. Same display→form→save flow as FNOL: pencil icon switches the card into inputs; Save commits via `updateClaim`; Cancel discards. After save, view returns to display mode.
-- Implement via a small reusable `EditableField` component (`src/components/common/EditableField.tsx`) and a `useEditableSection` pattern (local `editing` state + buffered draft) so each card manages its own edit lifecycle.
+Keep the legacy `status` field for now (used by HomeView list) but stop treating it as the source of truth — derive a `derivedStatus` helper in `src/lib/format.ts` from `tabStates` for any display that needs one label.
 
-### 6. Process Wall (`src/components/workspace/right/RightColumn.tsx`)
-- Replace the flat timeline with **collapsible subsections** in fixed order: **FNOL, Claims, Policy, Beneficiary, Beneficiary Settlement, Payout**.
-- Bucket existing `claim.activity` entries by their `tab` field (map `settlement` → "Beneficiary Settlement", `fnol` → "FNOL", etc.).
-- Each subsection header shows: title, count badge, and last activity timestamp. Body shows the chronological entries (existing icon + actor + action + detail + ts styling).
-- Default state: all sections expanded; remember per-section open state in component-local state.
+## 3. Center workspace tabs (`CenterColumn.tsx`)
 
-### 7. Mock data (`src/data/mockClaims.ts`)
-- Augment activity arrays so each tab bucket has at least 2-3 entries per claim, ensuring all six Process Wall subsections demonstrate content.
-- Add a few extra verified data points (e.g., rider names, premium history dates) referenced by the new extended views — kept compact, no schema explosion.
+Rename tab labels:
+- Claims → **Claim Verification**
+- Policy → **Policy Verification**
+- Beneficiaries → **Beneficiary Identification**
+- Beneficiary Settlement → **Beneficiary Settlement** (unchanged label)
+- Payout → **Payout** (unchanged label)
 
-### 8. Types (`src/types/claim.ts`)
-- Minor additions only as needed for extended views: optional `riders?: string[]`, `premiumHistory?: { date: string; amount: string }[]` on `PolicyInfo`; optional `verificationMatrix?: { idVerified: boolean; addressVerified: boolean; achVerified: boolean; ofacClear: boolean; }` on `Beneficiary`. All optional — existing data still valid.
+Replace the boxed `TabsList` with a custom tab bar: flat row, bottom border line, each tab is text only with a 2px bottom indicator on active. Color the tab label text by state:
+- `pending` → warning/orange (`text-warning`)
+- `done` → success/green (`text-success`)
 
-## Out of scope
+Active tab gets a stronger underline in the same color.
 
-- Top bar, Home view, AI Agents panel, External Order, Email panel — unchanged.
-- No backend; everything stays in-memory through `AppContext.updateClaim`.
+Right after the tab bar in each tab's content, render a shared `TabStateHeader` component:
+
+```text
+[ Pending ]  ●━━○   [Submit for Review*]
+   ↑ text card     ↑ toggle (orange when pending, green when done)
+```
+
+- Left text card: "Pending" or "Done" (plain text, no fill).
+- Toggle: minimal switch (use existing `Switch` ui, customize via data-state classes — orange thumb/track when off=pending, green when on=done).
+- Toggling updates `claim.tabStates[tab]` via `updateClaim`.
+- *Submit for Review button only appears on the Beneficiary Settlement tab, next to the toggle. On click → toast "Submitted for review" and switches the toggle to done.
+
+## 4. Observations section (new)
+
+New component `src/components/workspace/center/ObservationsSection.tsx`. Rendered inside `ClaimsTab`, `PolicyTab`, `BeneficiaryTab`, `SettlementTab`, `PayoutTab` immediately below `<ChecklistSection>`.
+
+- Full-width card per mismatch (one row each).
+- For each mismatch in the tab's checklist, derive an AI observation string from `item.label`, `expected`, `found`, `detail`, `source` (template like "EVVE returned DOB 1968-11-20 vs claimant-supplied 1968-11-02. 18-day skew. Common source: data-entry transposition. Recommend confirming DOB with claimant via document re-upload.").
+- Each card shows:
+  - Mismatch name + expected/found block (mono).
+  - "AI Observation" body paragraph.
+  - Action buttons: **Assign Task** (opens existing `NewTaskDialog` pre-filled), **Communicate** (toast stub), **Mark Resolved** (toast stub).
+- If no mismatches: small muted line "No observations — all checks verified."
+
+`NewTaskDialog` gains an optional `prefill` prop: `{ title, description, section }`.
+
+## 5. NewTaskDialog (`NewTaskDialog.tsx`)
+
+Add a new field "Assign to" with two-mode selector:
+- Radio/segmented: **Self-assigned** | **Assign to someone**.
+- When "Self-assigned": assignee auto-set to current user ("Sarah Mitchell").
+- When "Assign to someone": show the existing assignee dropdown.
+
+Accept `prefill` prop and seed `title/desc/section` when opening from Observations.
+
+## 6. Left panel (`LeftColumn.tsx`)
+
+New `TABS` order:
+1. Process Wall (existing)
+2. Documents (existing)
+3. External Order (existing)
+4. Email (existing)
+5. **Tasks** (new)
+6. **Notes** (new)
+
+Remove FNOL and Policy entries (delete imports of `FNOLPanel`, `PolicyPanel` from this file — files themselves can stay unused). Update `missingDocs` alert logic to remain on Documents.
+
+### TasksPanel (new `src/components/workspace/left/TasksPanel.tsx`)
+
+- Reads tasks from `claim.activity` entries whose `action` starts with "Task created — " (existing pattern from `NewTaskDialog`), plus any new dedicated `claim.tasks` array if we extend types. Simpler approach: add `tasks: TaskEntry[]` to `Claim` type with `{id, title, description, assignee, status: "pending"|"done", createdAt, section}`. Update `NewTaskDialog` to push into `claim.tasks` (as well as activity log).
+- Renders list grouped by status; each row shows title, assignee, section, timestamp, and a checkbox to mark done.
+- Red dot indicator on the icon rail when any pending tasks exist.
+
+### NotesPanel (new `src/components/workspace/left/NotesPanel.tsx`)
+
+- Reads from `claim.notes` (already exists).
+- Lists every note: workspace/section name (e.g. "Beneficiary Identification"), note text, author, timestamp.
+- Section name mapped from `note.tab` via a label map.
+
+### Mock notes seeding
+
+Add 4–6 realistic notes per claim across different tabs to `mockClaims.ts`, e.g.:
+- claims: "Express track candidate — clean docs."
+- policy: "Confirmed contestability passed; no underwriter concerns."
+- beneficiary: "Daniel called — confirmed mailing address change."
+- settlement: "Splits reviewed against will — match."
+- payout: "Holding for signed settlement; ETA Friday."
+
+Also seed initial `tasks` array per claim with 1–3 entries showing pending/done mix.
+
+## 7. File-level technical summary
+
+- **Edit** `src/types/claim.ts` — add `tabStates`, `tasks: TaskEntry[]`, and `TaskEntry` interface.
+- **Edit** `src/data/mockClaims.ts` — seed `tabStates`, `tasks`, expand `notes` for all 3 claims.
+- **Edit** `src/lib/format.ts` — add `deriveStatusFromTabs()` and `tabLabel()` helpers.
+- **Edit** `src/components/workspace/ClaimHeaderBar.tsx` — remove status select & Save button, show derived status text.
+- **Edit** `src/components/workspace/center/CenterColumn.tsx` — rename tabs, replace `TabsList` with custom underline tab bar, color by state.
+- **New** `src/components/workspace/center/TabStateHeader.tsx` — pending/done text card + toggle + optional Submit for Review.
+- **Edit** `src/components/workspace/center/tabs/ClaimsTab.tsx`, `PolicyTab.tsx`, `BeneficiaryTab.tsx`, `SettlementTab.tsx`, `PayoutTab.tsx` — render `<TabStateHeader>` at top, render `<ObservationsSection>` below `<ChecklistSection>`.
+- **New** `src/components/workspace/center/ObservationsSection.tsx`.
+- **Edit** `src/components/workspace/NewTaskDialog.tsx` — add self/other assignee selector, accept `prefill`, persist to `claim.tasks`.
+- **Edit** `src/components/workspace/left/LeftColumn.tsx` — new TABS array, mount Tasks & Notes panels, drop FNOL/Policy.
+- **New** `src/components/workspace/left/TasksPanel.tsx`.
+- **New** `src/components/workspace/left/NotesPanel.tsx`.
+
+## Out of scope (kept intact)
+
+- Right column (Agents/Notifications) is unchanged.
+- Process Wall content unchanged (still references `tab` keys including `fnol` for historical activity).
+- HomeView claim list keeps using `status` as a top-level summary string — derived from `tabStates` on render.

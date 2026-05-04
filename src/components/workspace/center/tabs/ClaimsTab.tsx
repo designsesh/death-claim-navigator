@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { ExpandableSection } from "../ExpandableSection";
 import { ChecklistSection } from "../ChecklistSection";
 import { ActivityNotesSection } from "../ActivityNotesSection";
+import { ObservationsSection } from "../ObservationsSection";
+import { TabStateHeader } from "../TabStateHeader";
 import { StatusPill } from "@/components/common/StatusPill";
 import { CheckCircle2, Pencil, Save, X, Check } from "lucide-react";
 import { DisplayField, EditField } from "@/components/common/EditableField";
@@ -40,6 +42,7 @@ export function ClaimsTab({ claim }: { claim: Claim }) {
 
   return (
     <div className="p-4 space-y-4">
+      <TabStateHeader claim={claim} tab="claims" />
       <ExpandableSection
         label="Summary — Intimation, Deceased, Claimant, Policy"
         extended={
@@ -117,7 +120,8 @@ export function ClaimsTab({ claim }: { claim: Claim }) {
         </div>
       </ExpandableSection>
 
-      <ChecklistSection items={all} label="Audit Checklist" />
+      <ChecklistSection items={all} label="Checklist" />
+      <ObservationsSection claim={claim} tab="claims" />
       <ActivityNotesSection claim={claim} tab="claims" />
     </div>
   );
