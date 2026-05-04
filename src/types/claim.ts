@@ -139,6 +139,21 @@ export type ClaimStatus =
   | "Rejected"
   | "Withdrawn";
 
+export type TabKey = "claims" | "policy" | "beneficiary" | "settlement" | "payout";
+export type TabState = "pending" | "done";
+
+export interface TaskEntry {
+  id: string;
+  title: string;
+  description?: string;
+  assignee: string;
+  selfAssigned: boolean;
+  status: "pending" | "done";
+  createdAt: string;
+  section: TabKey;
+  createdBy: string;
+}
+
 export interface Claim {
   id: string;
   status: ClaimStatus;
@@ -166,6 +181,8 @@ export interface Claim {
   activity: ActivityEntry[];
   notes: NoteEntry[];
   aiAgents: AIAgent[];
+  tabStates: Record<TabKey, TabState>;
+  tasks: TaskEntry[];
   settlement: {
     faceAmount: number;
     accruedInterest: number;
