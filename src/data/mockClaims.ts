@@ -156,6 +156,10 @@ const claimA: Claim = {
   ],
   notes: [
     { id: "N-1", ts: "2024-09-13 10:00", author: "Sarah Mitchell", text: "Express track candidate — clean docs, low complexity.", tab: "claims" },
+    { id: "N-2", ts: "2024-09-13 14:50", author: "Marcus Chen", text: "Underwriter notes pulled, contestability passed without issue.", tab: "policy" },
+    { id: "N-3", ts: "2024-09-14 09:20", author: "Sarah Mitchell", text: "Daniel called — confirmed mailing address and ACH details. Friendly.", tab: "beneficiary" },
+    { id: "N-4", ts: "2024-09-15 16:50", author: "Sarah Mitchell", text: "Splits reviewed against will — match. Ready to email beneficiaries.", tab: "settlement" },
+    { id: "N-5", ts: "2024-09-16 09:15", author: "Sarah Mitchell", text: "Holding for signed settlement; ETA Friday.", tab: "payout" },
   ],
   aiAgents: [
     { id: "AG-1", name: "FNOL Intake Agent", status: "complete", lastAction: "Parsed intake email", lastRun: "2024-09-12 09:35", history: [{ ts: "2024-09-12 09:35", action: "Parsed intake email", result: "10 fields extracted" }] },
