@@ -36,3 +36,21 @@ export function formatDateTimeUS(input?: string) {
   const h12 = ((hh + 11) % 12) + 1;
   return `${base} · ${h12}:${String(mm).padStart(2, "0")} ${ampm}`;
 }
+
+import type { Claim, TabKey } from "@/types/claim";
+
+export const TAB_LABELS: Record<TabKey, string> = {
+  claims: "Claim Verification",
+  policy: "Policy Verification",
+  beneficiary: "Beneficiary Identification",
+  settlement: "Beneficiary Settlement",
+  payout: "Payout",
+};
+
+export const TAB_ORDER: TabKey[] = ["claims", "policy", "beneficiary", "settlement", "payout"];
+
+export function deriveStatusFromTabs(claim: Claim): string {
+  const next = TAB_ORDER.find((k) => claim.tabStates[k] === "pending");
+  if (!next) return "Closed — All stages done";
+  return `In Progress — ${TAB_LABELS[next]}`;
+}
