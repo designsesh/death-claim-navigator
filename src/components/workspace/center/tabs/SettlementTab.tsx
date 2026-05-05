@@ -42,8 +42,10 @@ export function SettlementTab({ claim }: { claim: Claim }) {
 
   return (
     <div className="p-4 space-y-4">
-      <TabStateHeader claim={claim} tab="settlement" showSubmitForReview />
-      <ExpandableSection label="Settlement Calculation">
+      <ExpandableSection
+        label="Settlement Calculation"
+        rightSlot={<TabStateHeader claim={claim} tab="settlement" showSubmitForReview />}
+      >
         <div className="p-4 grid grid-cols-1 lg:grid-cols-3 gap-3">
           <Card className="p-3 space-y-1">
             <div className="label-tracked">Face Amount</div>
