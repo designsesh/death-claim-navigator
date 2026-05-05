@@ -118,6 +118,7 @@ export function LeftColumn({ claim }: { claim: Claim }) {
         </div>
         <div className="flex-1 overflow-auto">
           {active === "process" && <ProcessWallPanel claim={claim} />}
+          {active === "activity" && <ActivityPanel claim={claim} />}
           {active === "documents" && <DocumentsPanel claim={claim} />}
           {active === "external" && <ExternalOrderPanel claim={claim} />}
           {active === "email" && <EmailPanel claim={claim} />}
