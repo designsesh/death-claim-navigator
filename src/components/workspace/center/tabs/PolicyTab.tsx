@@ -30,9 +30,9 @@ export function PolicyTab({ claim }: { claim: Claim }) {
 
   return (
     <div className="p-4 space-y-4">
-      <TabStateHeader claim={claim} tab="policy" />
       <ExpandableSection
         label="Summary — Policy & Listed Beneficiaries"
+        rightSlot={<TabStateHeader claim={claim} tab="policy" />}
         extended={
           <div className="p-4 grid grid-cols-1 lg:grid-cols-2 gap-4">
             <Card className="p-3 space-y-2">
