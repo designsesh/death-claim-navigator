@@ -1,9 +1,9 @@
-import type { Claim } from "@/types/claim";
-import { useState } from "react";
+import type { Claim, TabKey } from "@/types/claim";
+import { useMemo, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-type StepStatus = "complete" | "in-progress" | "flagged" | "pending";
+type StepStatus = "complete" | "in-progress" | "pending";
 type StageStatus = "complete" | "in-progress" | "pending";
 
 interface Step {
@@ -19,81 +19,89 @@ interface Stage {
   steps: Step[];
 }
 
-const STAGES: Stage[] = [
+interface StageDef {
+  key: string;
+  tabKey: TabKey | "fnol";
+  title: string;
+  subtitle: string;
+  steps: string[];
+}
+
+const STAGE_DEFS: StageDef[] = [
   {
     key: "fnol",
+    tabKey: "fnol",
     title: "FNOL",
     subtitle: "Intimation",
-    status: "complete",
     steps: [
-      { label: "Identify Beneficiary or Nominee Details", status: "complete" },
-      { label: "Send Claim Form to Claimant", status: "complete" },
-      { label: "Acknowledge Claim Intimation", status: "complete" },
-      { label: "Freeze Policy for Claim Processing", status: "complete" },
+      "Identify Beneficiary or Nominee Details",
+      "Send Claim Form to Claimant",
+      "Acknowledge Claim Intimation",
+      "Freeze Policy for Claim Processing",
     ],
   },
   {
     key: "claim-review",
+    tabKey: "claims",
     title: "Claim Review",
     subtitle: "Claims Data Entry & Scrutiny",
-    status: "complete",
     steps: [
-      { label: "Facilitate Form Exchange", status: "complete" },
-      { label: "Send Reminders to Claimant or Beneficiary", status: "complete" },
-      { label: "Review Submitted Documents", status: "complete" },
-      { label: "Validate External Data Sources", status: "complete" },
+      "Facilitate Form Exchange",
+      "Send Reminders to Claimant or Beneficiary",
+      "Review Submitted Documents",
+      "Validate External Data Sources",
     ],
   },
   {
     key: "policy-review",
+    tabKey: "policy",
     title: "Policy Review",
     subtitle: "Policy & Claim Verification",
-    status: "complete",
     steps: [
-      { label: "Verify Policy Details", status: "complete" },
-      { label: "Verify Payment Details", status: "complete" },
-      { label: "Verify Outstanding Loan Details", status: "complete" },
-      { label: "Verify Reversals, if Any", status: "complete" },
+      "Verify Policy Details",
+      "Verify Payment Details",
+      "Verify Outstanding Loan Details",
+      "Verify Reversals, if Any",
     ],
   },
   {
     key: "beneficiary-id",
+    tabKey: "beneficiary",
     title: "Beneficiary Identification",
     subtitle: "Beneficiary & Relationship Evidence",
-    status: "in-progress",
     steps: [
-      { label: "Verify Claimant Information", status: "flagged" },
-      { label: "Verify Trust Details", status: "pending" },
-      { label: "Verify Estate Details", status: "pending" },
-      { label: "Verify Child Beneficiary Details", status: "pending" },
+      "Verify Claimant Information",
+      "Verify Trust Details",
+      "Verify Estate Details",
+      "Verify Child Beneficiary Details",
     ],
   },
   {
     key: "settlement",
+    tabKey: "settlement",
     title: "Beneficiary Settlement",
     subtitle: "Calculation & Settlement",
-    status: "pending",
     steps: [
-      { label: "Validate Loan Information", status: "pending" },
-      { label: "Validate Rider Details", status: "pending" },
-      { label: "Calculate Interest (if Applicable)", status: "pending" },
-      { label: "Apply Deductions and Outstanding Premiums", status: "pending" },
-      { label: "Process Beneficiary Splits", status: "pending" },
-      { label: "Review Beneficiary Checks", status: "pending" },
+      "Validate Loan Information",
+      "Validate Rider Details",
+      "Calculate Interest (if Applicable)",
+      "Apply Deductions and Outstanding Premiums",
+      "Process Beneficiary Splits",
+      "Review Beneficiary Checks",
     ],
   },
   {
     key: "payout",
+    tabKey: "payout",
     title: "Payout",
     subtitle: "Payout & Closure",
-    status: "pending",
     steps: [
-      { label: "Process Payout Methods", status: "pending" },
-      { label: "Calculate 1099 Tax", status: "pending" },
-      { label: "Conduct Anti-Money Laundering (AML) Review", status: "pending" },
-      { label: "Generate Payment Authorization", status: "pending" },
-      { label: "Verify Payment Confirmation", status: "pending" },
-      { label: "Close Policy", status: "pending" },
+      "Process Payout Methods",
+      "Calculate 1099 Tax",
+      "Conduct Anti-Money Laundering (AML) Review",
+      "Generate Payment Authorization",
+      "Verify Payment Confirmation",
+      "Close Policy",
     ],
   },
 ];
@@ -101,13 +109,50 @@ const STAGES: Stage[] = [
 const BULLET_COLOR: Record<StepStatus, string> = {
   complete: "bg-success",
   "in-progress": "bg-warning",
-  flagged: "bg-danger",
   pending: "bg-muted-foreground/40",
 };
 
-export function ProcessWallPanel({ claim: _claim }: { claim: Claim }) {
+const DOT_COLOR: Record<StageStatus, string> = {
+  complete: "bg-success",
+  "in-progress": "bg-warning",
+  pending: "bg-muted-foreground/70",
+};
+
+function buildStages(claim: Claim): Stage[] {
+  // FNOL is always considered complete (intimation already happened to create the claim)
+  // For each tab stage: "done" → complete; first non-done → in-progress; rest → pending
+  const tabOrder: TabKey[] = ["claims", "policy", "beneficiary", "settlement", "payout"];
+  let foundCurrent = false;
+  const tabStatus: Record<TabKey, StageStatus> = {} as Record<TabKey, StageStatus>;
+  for (const k of tabOrder) {
+    if (claim.tabStates[k] === "done") {
+      tabStatus[k] = "complete";
+    } else if (!foundCurrent) {
+      tabStatus[k] = "in-progress";
+      foundCurrent = true;
+    } else {
+      tabStatus[k] = "pending";
+    }
+  }
+
+  return STAGE_DEFS.map((def) => {
+    const status: StageStatus = def.tabKey === "fnol" ? "complete" : tabStatus[def.tabKey];
+    const stepStatus: StepStatus =
+      status === "complete" ? "complete" : "pending";
+    return {
+      key: def.key,
+      title: def.title,
+      subtitle: def.subtitle,
+      status,
+      steps: def.steps.map((label) => ({ label, status: stepStatus })),
+    };
+  });
+}
+
+export function ProcessWallPanel({ claim }: { claim: Claim }) {
+  const stages = useMemo(() => buildStages(claim), [claim]);
   const [open, setOpen] = useState<Record<string, boolean>>(() =>
-    Object.fromEntries(STAGES.map((s) => [s.key, s.status !== "complete"])),
+    Object.fromEntries(stages.map((s) => [s.key, s.status !== "complete"])),
   );
 
   return (
@@ -117,12 +162,17 @@ export function ProcessWallPanel({ claim: _claim }: { claim: Claim }) {
         <div className="absolute left-[5px] top-1 bottom-1 w-px bg-border" />
 
         <ul className="space-y-8">
-          {STAGES.map((stage) => {
+          {stages.map((stage) => {
             const isOpen = open[stage.key];
             return (
               <li key={stage.key} className="relative pl-6">
                 {/* dot */}
-                <span className="absolute left-0 top-[6px] h-[11px] w-[11px] rounded-full bg-muted-foreground/70 ring-2 ring-card" />
+                <span
+                  className={cn(
+                    "absolute left-0 top-[6px] h-[11px] w-[11px] rounded-full ring-2 ring-card",
+                    DOT_COLOR[stage.status],
+                  )}
+                />
 
                 <button
                   onClick={() => setOpen((m) => ({ ...m, [stage.key]: !m[stage.key] }))}
