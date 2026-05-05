@@ -37,8 +37,10 @@ export function PayoutTab({ claim }: { claim: Claim }) {
 
   return (
     <div className="p-4 space-y-4">
-      <TabStateHeader claim={claim} tab="payout" />
-      <ExpandableSection label="Accounting Entries">
+      <ExpandableSection
+        label="Accounting Entries"
+        rightSlot={<TabStateHeader claim={claim} tab="payout" />}
+      >
         <div className="p-0">
           <Table>
             <TableHeader>
