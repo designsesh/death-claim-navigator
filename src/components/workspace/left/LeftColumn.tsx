@@ -1,6 +1,6 @@
 import type { Claim } from "@/types/claim";
 import { useState } from "react";
-import { FolderOpen, Globe2, Mail, AlertCircle, ChevronsLeft, ChevronsRight, Activity as ActivityIcon, ListChecks, StickyNote } from "lucide-react";
+import { FolderOpen, Globe2, Mail, AlertCircle, ChevronsLeft, ChevronsRight, Activity as ActivityIcon, ListChecks, StickyNote, Workflow } from "lucide-react";
 import { HoverLabel } from "@/components/common/HoverLabel";
 import { cn } from "@/lib/utils";
 import { DocumentsPanel } from "./DocumentsPanel";
@@ -9,9 +9,11 @@ import { EmailPanel } from "./EmailPanel";
 import { ProcessWallPanel } from "./ProcessWallPanel";
 import { TasksPanel } from "./TasksPanel";
 import { NotesPanel } from "./NotesPanel";
+import { ActivityPanel } from "./ActivityPanel";
 
 const TABS = [
-  { id: "process", label: "Process Wall", icon: ActivityIcon },
+  { id: "process", label: "Process Wall", icon: Workflow },
+  { id: "activity", label: "Activity", icon: ActivityIcon },
   { id: "documents", label: "Documents", icon: FolderOpen },
   { id: "external", label: "External Order", icon: Globe2 },
   { id: "email", label: "Email", icon: Mail },
