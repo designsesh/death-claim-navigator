@@ -42,9 +42,9 @@ export function ClaimsTab({ claim }: { claim: Claim }) {
 
   return (
     <div className="p-4 space-y-4">
-      <TabStateHeader claim={claim} tab="claims" />
       <ExpandableSection
         label="Summary — Intimation, Deceased, Claimant, Policy"
+        rightSlot={<TabStateHeader claim={claim} tab="claims" />}
         extended={
           <div className="p-4 space-y-3">
             <div className="label-tracked">Verified Intimation Trail</div>
