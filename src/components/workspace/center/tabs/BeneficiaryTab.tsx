@@ -17,9 +17,9 @@ import { toast } from "@/hooks/use-toast";
 export function BeneficiaryTab({ claim }: { claim: Claim }) {
   return (
     <div className="p-4 space-y-4">
-      <TabStateHeader claim={claim} tab="beneficiary" />
       <ExpandableSection
         label={`Beneficiaries (${claim.beneficiaries.length})`}
+        rightSlot={<TabStateHeader claim={claim} tab="beneficiary" />}
         extended={
           <div className="p-4 space-y-4">
             <div>
